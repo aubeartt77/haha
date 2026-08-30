@@ -1,88 +1,617 @@
-<script>
-  /* 팁: 아래 'slotStatus'에서 각 달의 슬롯 동그라미 표기를 자유롭게 바꾸실 수 있습니다. 
-     ● = 마감/작업중, ○ = 비었음, ◐ = 예약/대기중 */
-  const slotStatus = [
-    '●',
-    '◐',
-    '○'
-  ];
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>오브 - Artist Profile</title>
+<style>
+/* 무료 공개 CDN(jsDelivr)에 이미 올라가 있는 폰트라 파일 업로드 없이 바로 사용 가능 */
+@font-face {
+    font-family: 'Paperlogy';
+    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/2408-3@1.0/Paperlogy-6SemiBold.woff2') format('woff2');
+    font-weight: 600;
+    font-style: normal;
+    font-display: swap;
+}
 
-  /* 팁: 여기에 의뢰자님 닉네임을 넣어주시면 슬롯 밑에 자동으로 표시됩니다.
-     빈칸('')으로 두면 아무것도 표시되지 않아요. */
-  const slotNickname = [
-    '*******5님',
-    '**라님',
-    ''
-  ];
+.ove2 {
+    --accent: #d98c3d;      /* 별/포인트 색 - 톤 다운된 캐러멜 골드 */
+    --pink-deep: #e08a5c;
+    --ink: #4a3f38;
+    --sub: #8a7b70;
+    font-family: "Paperlogy", "Noto Sans KR", sans-serif;
+    font-weight: 500;
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 40px 20px 80px 20px;
+    background: linear-gradient(180deg, #fff8ef 0%, #fff0dc 55%, #ffe4bd 100%);
+    color: var(--ink);
+    box-sizing: border-box;
+}
+.ove2 * { box-sizing: border-box; }
+.ove2 img { max-width: 100%; display: block; }
 
-  function renderSlots() {
-    const container = document.getElementById('slotContainer');
-    if (!container) return;
+html { scroll-behavior: smooth; }
+#work, #notice, #order, #collab, #portfolio, #design-sample, #expression-sample, #calc, #inquiry, #faq { scroll-margin-top: 20px; }
+.showstep1 { max-height: none !important; overflow: visible !important; }
+.btn_open { display: none !important; }
 
-    const now = new Date();
-    let html = '';
+/* 별 아이콘 통일 (공지사항 목록 별과 동일 스타일) */
+.ove2-star { color: var(--accent); font-size: 0.85em; margin: 0 7px; }
 
-    for (let i = 0; i < 3; i++) {
-      const d = new Date(now.getFullYear(), now.getMonth() + i, 1);
-      const mName = (d.getMonth() + 1) + '월';
-      const status = slotStatus[i] || '○';
-      const nick = slotNickname[i] || '';
+/* ===== 공통 카드 ===== */
+.ove2-card {
+    background: #fffdfb;
+    border-radius: 20px;
+    box-shadow: 0 8px 24px rgba(190, 130, 70, 0.09);
+    padding: 32px 36px;
+    margin-bottom: 28px;
+}
+.ove2-title {
+    text-align: center;
+    font-size: 19px;
+    font-weight: 700;
+    color: var(--ink);
+    margin: 0 0 22px 0;
+    letter-spacing: 0.2px;
+}
 
-      const nickHtml = nick
-        ? `<span class="nick">${nick}</span>`
-        : '';
+/* ===== 프로필 카드 ===== */
+.ove2-profile { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 16px; }
+.ove2-profile .avatar {
+    width: 128px; height: 128px; border-radius: 50%; object-fit: cover;
+    border: 3px solid #fff; box-shadow: 0 5px 14px rgba(190,130,70,0.16); flex: 0 0 auto;
+}
+.ove2-profile .info { flex: 1; }
+.ove2-profile .info h3 { display:flex; align-items:center; justify-content:center; font-size:15.5px; font-weight:700; margin:0 0 12px 0; }
+.ove2-profile .info p { margin: 4px 0; font-size: 13.5px; font-weight: 500; line-height: 1.7; color: var(--sub); }
 
-      html += `
-        <div class="m">
-          <span class="cap">${mName}</span>
-          <span class="dotrow">${status}</span>
-          ${nickHtml}
+/* ===== 슬롯 현황 ===== */
+.ove2-legend { text-align: center; font-size: 12.5px; color: var(--sub); margin-bottom: 22px; }
+.ove2-legend span { margin: 0 14px; }
+.ove2-legend .circle { display:inline-block; width:10px; height:10px; border-radius:50%; margin-right:5px; vertical-align:middle; position:relative; top:-1px; }
+.ove2-legend .empty { border: 1.5px solid #ecc99a; }
+.ove2-legend .wait  { border: 1.5px solid var(--accent); box-shadow: inset 0 0 0 2px #fff, inset 0 0 0 3.5px var(--accent); }
+.ove2-legend .done  { background: var(--accent); }
+.ove2-month { display:flex; justify-content:center; gap:50px; }
+.ove2-month .m { text-align:center; font-size:12.5px; font-weight:600; }
+.ove2-month .m .cap { display:block; margin-bottom:8px; font-size:13.5px; font-weight:700; }
+.ove2-month .m .dotrow { font-size:17px; letter-spacing:5px; color: var(--accent); }
+.ove2-month .m .nick { display:block; margin-top:6px; font-size:11.5px; font-weight:600; color: var(--sub); }
+
+/* ===== 공지사항 ===== */
+.ove2-list { list-style:none; margin:0; padding:0; text-align:left; }
+.ove2-list li {
+    position: relative; padding: 10px 0 10px 20px;
+    font-size: 13px; font-weight: 500; color: var(--sub);
+    border-bottom: 1px dashed #f0e2d2; line-height: 1.6;
+}
+.ove2-list li:last-child { border-bottom: none; }
+.ove2-list li::before { content: "★"; position:absolute; left:0; top:10px; color: var(--accent); font-size: 11px; }
+.ove2-list b { color: var(--pink-deep); font-weight: 700; }
+
+/* ===== 작업 순서 ===== */
+.ove2-steps { display:flex; justify-content:space-between; gap:8px; flex-wrap:wrap; margin-bottom: 22px; }
+.ove2-step { flex:1 1 120px; text-align:center; background:#fff9f2; border:1px solid #ffe4c4; border-radius:14px; padding:16px 8px; }
+.ove2-step .num { width:28px; height:24px; line-height:24px; border-radius:12px; background:var(--accent); color:#fff; font-weight:700; font-size:11px; margin:0 auto 8px auto; }
+.ove2-step .label { font-weight:700; font-size:12.5px; margin-bottom:0; }
+.ove2-note { font-size: 12px; color: var(--sub); line-height: 1.8; text-align:left; padding-top: 10px; border-top: 1px dashed #f0e2d2; }
+.ove2-note b { color: var(--pink-deep); font-weight: 700; }
+
+/* ===== 포트폴리오 ===== */
+.ove2-subtext { text-align: center; font-size: 12px; color: var(--pink-deep); font-weight: 700; margin: -14px 0 18px 0; }
+.ove2-gallery {
+    display:flex;
+    gap:16px;
+    overflow-x:auto;
+    overflow-y:hidden;
+    padding:6px 6px 16px 6px;
+    scroll-behavior:smooth;
+    scroll-snap-type:x proximity;
+    -webkit-overflow-scrolling:touch;
+}
+.ove2-gallery img {
+    display:block;
+    flex:0 0 calc(50% - 8px);
+    min-width:calc(50% - 8px);
+    scroll-snap-align:start;
+    width:100%;
+    height:auto;
+    max-width:none;
+    object-fit:contain;
+    background:#fdf6ec;
+    border-radius:12px;
+    box-shadow:0 3px 12px rgba(190,130,70,0.12);
+    cursor:zoom-in;
+}
+.ove2-gallery::-webkit-scrollbar { height:6px; }
+.ove2-gallery::-webkit-scrollbar-thumb { background:#ecc99a; border-radius:10px; }
+.ove2-gallery-preview {
+    display:flex;
+    gap:8px;
+    overflow-x:auto;
+    padding:0 6px 6px 6px;
+    -webkit-overflow-scrolling:touch;
+}
+.ove2-gallery-preview button {
+    flex:0 0 72px;
+    width:72px;
+    height:72px;
+    padding:0;
+    border:0;
+    border-radius:8px;
+    overflow:hidden;
+    background:#fdf6ec;
+    cursor:pointer;
+}
+.ove2-gallery-preview img {
+    width:100%;
+    height:100%;
+    object-fit:cover;
+}
+
+/* ===== 협업 할인 ===== */
+.ove2-collab-block { margin-bottom: 26px; }
+.ove2-collab-block:last-child { margin-bottom: 0; }
+.ove2-collab-name { text-align:center; font-size:14.5px; font-weight:700; color:var(--ink); margin-bottom:4px; }
+.ove2-collab-name .dia { color: var(--accent); margin: 0 6px; font-weight:400; }
+.ove2-collab-desc { text-align:center; font-size:12.5px; font-weight:700; color: var(--pink-deep); margin-bottom:4px; }
+.ove2-collab-link { text-align:center; margin-bottom:12px; }
+.ove2-collab-link a {
+    display:inline-block;
+    font-size:12px;
+    font-weight:700;
+    color:#fff;
+    background: linear-gradient(135deg, var(--accent), var(--pink-deep));
+    padding:7px 18px;
+    border-radius:999px;
+    text-decoration:none;
+    box-shadow: 0 3px 10px rgba(190,130,70,0.25);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.ove2-collab-link a:hover { transform: translateY(-1px); box-shadow: 0 5px 14px rgba(190,130,70,0.32); }
+.ove2-collab-link a::after { content: " →"; }
+.ove2-collab-gallery { display:flex; flex-wrap:wrap; justify-content:center; gap:12px; }
+.ove2-collab-gallery img {
+    width: 200px;
+    height: auto;
+    max-width: 46%;
+    border-radius: 12px;
+    background:#fdf6ec;
+    box-shadow: 0 3px 12px rgba(190,130,70,0.12);
+    object-fit: cover;
+}
+
+/* 사진 확대보기 - 모든 갤러리 공용 (사진 목록에서 자동으로 열림, 별도 편집 불필요) */
+.ove2-lb-modal {
+    display:none;
+    position:fixed;
+    inset:0;
+    z-index:99999;
+    align-items:center;
+    justify-content:center;
+    padding:30px;
+    box-sizing:border-box;
+    background:rgba(30,20,10,0.85);
+}
+.ove2-lb-modal.open { display:flex; }
+.ove2-lb-modal img { max-width:92vw; max-height:90vh; border-radius:10px; }
+.ove2-lb-modal .ove2-lb-modal-close { position:fixed; top:18px; right:26px; color:#fff; font-size:30px; z-index:3; cursor:pointer; font-weight:300; }
+
+/* ===== 실시간 견적 계산기 ===== */
+.ove2-calc-group-title { font-size:12.5px; font-weight:700; color: var(--pink-deep); margin: 18px 0 6px 0; }
+.ove2-calc-group-title:first-of-type { margin-top: 0; }
+.ove2-calc-opt {
+    display:flex; align-items:center; justify-content:space-between;
+    padding:10px 4px; border-bottom:1px dashed #f0e2d2; font-size:13px; font-weight:600;
+}
+.ove2-calc-opt label { display:flex; align-items:center; gap:9px; cursor:pointer; }
+.ove2-calc-opt input[type="checkbox"],
+.ove2-calc-opt input[type="radio"] { width:16px; height:16px; accent-color: var(--accent); cursor:pointer; }
+.ove2-calc-opt .price { color: var(--accent); font-weight:700; white-space:nowrap; }
+.ove2-calc-opt .stepper { display:flex; align-items:center; gap:6px; }
+.ove2-calc-opt .stepper input[type="number"] {
+    width:44px; text-align:center; border:1px solid #eddccb; border-radius:8px; padding:3px 2px; font-size:12.5px; font-family:inherit;
+}
+.ove2-calc-total { margin-top:18px; background:#fff3e6; border-radius:14px; padding:16px 20px; display:flex; align-items:center; justify-content:space-between; font-size:14.5px; font-weight:700; }
+.ove2-calc-total .sum { font-size:20px; color: var(--accent); }
+.ove2-calc-caveat { font-size:11px; color: var(--sub); margin-top:8px; line-height:1.6; }
+
+/* ===== 문의 양식(입력+복사) ===== */
+.ove2-form-box { text-align:left; background:#fff9f2; border:1px solid #ffe4c4; border-radius:16px; padding:22px 24px; }
+.ove2-fld { margin-bottom: 16px; }
+.ove2-fld:last-child { margin-bottom: 0; }
+.ove2-fld .q { font-size:13px; font-weight:700; margin-bottom:6px; }
+.ove2-fld .sub { color: var(--sub); font-weight:500; font-size:11.5px; margin-left:4px; }
+.ove2-fld input[type="text"], .ove2-fld textarea {
+    width:100%; border:1px solid #eddccb; border-radius:10px; padding:9px 12px;
+    font-family: inherit; font-size:12.5px; color: var(--ink); background:#fff; resize:vertical;
+}
+.ove2-fld textarea { min-height: 56px; }
+.ove2-check-row { display:flex; gap:16px; }
+.ove2-check-row label { display:flex; align-items:center; gap:6px; font-size:13px; font-weight:600; cursor:pointer; }
+.ove2-check-row input { accent-color: var(--accent); width:15px; height:15px; }
+.ove2-copy-btn {
+    display:block; margin:18px auto 0 auto; background: var(--accent); color:#fff; font-weight:700;
+    font-size:13px; padding:10px 26px; border-radius:30px; cursor:pointer; border:none;
+}
+.ove2-copy-btn:active { transform: scale(0.97); }
+
+/* ===== FAQ 아코디언 ===== */
+.ove2-faq details {
+    border-bottom: 1px dashed #f0e2d2;
+    padding: 14px 4px;
+}
+.ove2-faq details:last-child { border-bottom: none; }
+.ove2-faq summary {
+    cursor: pointer;
+    font-size: 13.5px;
+    font-weight: 700;
+    list-style: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.ove2-faq summary::-webkit-details-marker { display: none; }
+.ove2-faq summary::after {
+    content: "+";
+    font-size: 16px;
+    color: var(--accent);
+    font-weight: 700;
+    transition: transform 0.15s ease;
+}
+.ove2-faq details[open] summary::after { transform: rotate(45deg); }
+.ove2-faq .a { font-size: 12.5px; color: var(--sub); line-height: 1.7; margin-top: 10px; padding-left: 2px; }
+</style>
+</head>
+<body>
+
+<div class="ove2">
+
+    <!-- ===== 작가 소개 ===== -->
+    <div class="ove2-card ove2-profile">
+        <img class="avatar" src="https://artmugfile2.cafe24.com/image/up_img/detail/6/goods_60782/17881022550_Re.jpg" alt="작가 프로필">
+        <div class="info">
+            <h3><span class="ove2-star">★</span>작가 소개<span class="ove2-star">★</span></h3>
+            <p>안녕하세요. 일러스트레이터 오브입니다!</p>
+            <p>매력적이고 깔끔한 스타일의 디자인을 원하신다면 언제든 찾아주세요!</p>
+            <p>모든 문의 환영합니다 :)</p>
         </div>
-      `;
-    }
+    </div>
 
-    container.innerHTML = html;
-  }
+    <!-- ===== 슬롯 현황 ===== -->
+    <div id="work"></div>
+    <div class="ove2-card">
+        <div class="ove2-title"><span class="ove2-star">★</span>슬롯 현황<span class="ove2-star">★</span></div>
+        <div class="ove2-legend">
+            <span><span class="circle empty"></span>비었음</span>
+            <span><span class="circle wait"></span>예약 / 대기중</span>
+            <span><span class="circle done"></span>마감 / 작업중</span>
+        </div>
+        <!-- 자동으로 현재 달부터 3개월이 계산되어 표시됩니다 -->
+        <div class="ove2-month" id="slotContainer">
+            <!-- 자바스크립트에 의해 자동 생성됩니다 -->
+        </div>
+    </div>
 
-  renderSlots();
+    <!-- ===== 공지사항 ===== -->
+    <div id="notice"></div>
+    <div class="ove2-card">
+        <div class="ove2-title"><span class="ove2-star">★</span>공지사항<span class="ove2-star">★</span></div>
+        <ul class="ove2-list">
+            <li>모든 커미션 작업물에 대한 <b>저작권은 오브(본인)</b>에게 있음을 알립니다.</li>
+            <li>예약은 견적을 내신 뒤, <b>결제 후</b> 예약이 가능합니다.</li>
+            <li>모든 작업물은 SNS 게시용·포트폴리오·샘플 등으로 사용될 수 있습니다. <b>(비공개 추가금 +50,000원~)</b></li>
+            <li>표정 6개 <b>(눈물·분노·정색·홍조·눈 하트·눈 반짝)</b>를 기본 제공합니다.</li>
+            <li>작업 사이즈는 기본 <b>가로 3500px · 세로 8000px</b> 이상으로 작업합니다.</li>
+            <li>원본 PSD 파일은 리거 외 유출·공유가 금지되어 있습니다. <b>(저작권 구매 시 가능)</b></li>
+            <li><b>R-18·고어·중년 및 노년</b> 등은 받지 않습니다.</li>
+            <li>작업 기간은 최소 <b>14일 ~ 최대 45일</b>까지 소요됩니다.</li>
+        </ul>
+    </div>
 
-  /* iframe 높이 자동 전달 */
-  function sendHeight() {
-    const height = Math.max(
-      document.body.scrollHeight,
-      document.documentElement.scrollHeight,
-      document.body.offsetHeight,
-      document.documentElement.offsetHeight
-    );
+    <!-- ===== 작업 순서 ===== -->
+    <div id="order"></div>
+    <div class="ove2-card">
+        <div class="ove2-title"><span class="ove2-star">★</span>작업 순서<span class="ove2-star">★</span></div>
+        <div class="ove2-steps">
+            <div class="ove2-step"><div class="num">01</div><div class="label">문의</div></div>
+            <div class="ove2-step"><div class="num">02</div><div class="label">예약 및 결제</div></div>
+            <div class="ove2-step"><div class="num">03</div><div class="label">디자인 시안 컨펌</div></div>
+            <div class="ove2-step"><div class="num">04</div><div class="label">1차 컨펌</div></div>
+            <div class="ove2-step"><div class="num">05</div><div class="label">완성</div></div>
+            <div class="ove2-step"><div class="num">06</div><div class="label">2차 컨펌</div></div>
+            <div class="ove2-step"><div class="num">07</div><div class="label">최종본 전달</div></div>
+        </div>
+        <div class="ove2-note">
+            <b>1차 컨펌</b> — 디자인 시안을 토대로 컬러 러프 전달, 큰 형태의 수정 가능 (동작, 소품의 큰 모양·덩어리 등)<br><br>
+            <b>2차 컨펌</b> — 작은 형태의 수정 가능 (약간의 색감 수정, 잔머리 추가 등)<br><br>
+            ★ 1차에서 최대한 수정해 드리고 있으나, 원활한 수정을 위해 1차 컨펌 단계에서 명확하게 말씀해 주시면 감사하겠습니다.<br>
+            ★ 컨펌 기간이 늦어진 만큼 작업 기간이 늘어날 수 있습니다.
+        </div>
+    </div>
 
-    window.parent.postMessage({
-      frameHeight: height
-    }, '*');
-  }
+    <!-- ===== 협업 할인 ===== -->
+    <!-- 협업하신 분마다 아래 .ove2-collab-block 하나씩 복사해서 이름/할인내용/링크/이미지만 바꿔주세요 -->
+    <div id="collab"></div>
+    <div class="ove2-card">
+        <div class="ove2-title"><span class="ove2-star">★</span>협업 할인<span class="ove2-star">★</span></div>
 
-  /* 페이지 및 이미지 로딩 후 높이 갱신 */
-  window.addEventListener('load', function () {
-    sendHeight();
+        <div class="ove2-collab-block">
+            <div class="ove2-collab-name"><span class="dia">◇</span>NENI님 협업<span class="dia">◇</span></div>
+            <div class="ove2-collab-desc">일러스트 5만원 할인+리깅 5만원 할인+표정 2개 추가 작업</div>
+            <div class="ove2-collab-link"><a href="https://artmug.kr/index.php?channel=view&uid=59888" target="_blank">NENI님 페이지 바로가기</a></div>
+            <div class="ove2-collab-gallery">
+                <!-- 이미지 URL만 교체해주세요. GIF도 그대로 사용 가능합니다 -->
+                <img src="https://artmugfile3.cafe24.com/image/up_img/detail/3/goods_31295/17848213260.gif">
+                <img src="https://artmugfile3.cafe24.com/image/up_img/detail/3/goods_31295/17848213261.gif">
+                <img src="https://artmugfile3.cafe24.com/image/up_img/detail/3/goods_31295/17848223560.gif">
+            </div>
+        </div>
 
-    setTimeout(sendHeight, 300);
-    setTimeout(sendHeight, 1000);
-    setTimeout(sendHeight, 2000);
-  });
+        <div class="ove2-collab-block">
+            <div class="ove2-collab-name"><span class="dia">◇</span>세르팡님 협업<span class="dia">◇</span></div>
+            <div class="ove2-collab-desc">리깅 5만원 할인 + 표정 1개 추가 작업</div>
+            <div class="ove2-collab-link"><a href="https://artmug.kr/index.php?channel=view&uid=25829" target="_blank">세르팡님 페이지 바로가기</a></div>
+            <div class="ove2-collab-gallery">
+                <img src="https://artmugfile3.cafe24.com/image/up_img/detail/3/goods_31295/16948604010.gif">
+                <img src="https://artmugfile3.cafe24.com/image/up_img/detail/3/goods_31295/16948604011.gif">            </div>
+        </div>
 
-  /* 화면 크기 변경 */
-  window.addEventListener('resize', sendHeight);
+        <div class="ove2-collab-block">
+            <div class="ove2-collab-name"><span class="dia">◇</span>솜이님 협업<span class="dia">◇</span></div>
+            <div class="ove2-collab-desc">리깅 10만원 할인+일러스트 5만원 할인+표정 1개 추가 작업</div>
+            <div class="ove2-collab-link"><a href="https://artmug.kr/index.php?channel=view&uid=58777" target="_blank">솜이님 페이지 바로가기</a></div>
+            <div class="ove2-collab-gallery">
+                 <img src="https://artmugfile3.cafe24.com/image/up_img/detail/3/goods_31295/17821291060_Re.jpg">
+            </div>
+        </div>
+    </div>
 
-  /* 내용 크기가 바뀌면 자동 갱신 */
-  if (typeof ResizeObserver !== 'undefined') {
-    const observer = new ResizeObserver(function () {
-      sendHeight();
+    <!-- ===== 포트폴리오 ===== -->
+    <!-- 사진 추가/삭제/교체 방법: 아래 .ove2-gallery 안에 <img src="사진주소"> 한 줄씩만 있으면 됩니다.
+         - 교체: src="..." 안의 주소만 새 사진 주소로 바꾸기
+         - 추가: <img src="사진주소"> 한 줄을 원하는 위치에 복사해서 붙여넣기
+         - 삭제: 지우고 싶은 <img src="..."> 한 줄 통째로 삭제
+         미리보기 썸네일과 확대보기는 자동으로 만들어지므로 여기만 수정하면 됩니다! -->
+    <div id="portfolio"></div>
+    <div class="ove2-card">
+        <div class="ove2-title"><span class="ove2-star">★</span>포트폴리오<span class="ove2-star">★</span></div>
+        <div class="ove2-subtext">오른쪽으로 넘길 수록 예전 작업물 입니다</div>
+        <div class="ove2-gallery" data-label="포트폴리오">
+            <img src="https://artmugfile3.cafe24.com/image/up_img/detail/3/goods_31295/17870382510_Re.jpg">
+            <img src="https://artmugfile3.cafe24.com/image/up_img/detail/3/goods_31295/17819427920_Re.jpg">
+            <img src="https://artmugfile3.cafe24.com/image/up_img/detail/3/goods_31295/17419372830_Re.jpg">
+            <img src="https://artmugfile3.cafe24.com/image/up_img/detail/3/goods_31295/16901295120_Re.jpg">
+            <img src="https://artmugfile3.cafe24.com/image/up_img/detail/3/goods_31295/16880274810_Re.jpg">
+            <img src="https://artmugfile3.cafe24.com/image/up_img/detail/3/goods_31295/16846896093_Re.jpg">
+            
+        </div>
+        <div class="ove2-gallery-preview" aria-label="포트폴리오 미리보기"></div>
+    </div>
+
+    <!-- ===== 디자인 샘플 ===== -->
+    <!-- 사진 추가/삭제/교체 방법은 포트폴리오와 동일합니다: 아래 .ove2-gallery 안의 <img src="..."> 줄만 편집하세요 -->
+    <div id="design-sample"></div>
+    <div class="ove2-card">
+        <div class="ove2-title"><span class="ove2-star">★</span>디자인 샘플<span class="ove2-star">★</span></div>
+        <div class="ove2-gallery" data-label="디자인 샘플">
+            <img src="https://artmugfile3.cafe24.com/image/up_img/detail/3/goods_31295/17874065660_Re.jpg">
+             <img src="https://artmugfile3.cafe24.com/image/up_img/detail/3/goods_31295/17846194400_Re.jpg">
+             <img src="https://artmugfile3.cafe24.com/image/up_img/detail/3/goods_31295/17846194780_Re.jpg">
+             <img src="https://artmugfile3.cafe24.com/image/up_img/detail/3/goods_31295/17822679730_Re.jpg">
+        </div>
+        <div class="ove2-gallery-preview" aria-label="디자인 샘플 미리보기"></div>
+    </div>
+
+    <!-- ===== 표정 샘플 ===== -->
+    <div id="expression-sample"></div>
+    <div class="ove2-card">
+        <div class="ove2-title"><span class="ove2-star">★</span>표정 샘플<span class="ove2-star">★</span></div>
+        <div class="ove2-gallery" data-label="표정 샘플">
+            <img src="https://artmugfile3.cafe24.com/image/up_img/detail/3/goods_31295/17818641250_Re.jpg">
+            <img src="https://artmugfile3.cafe24.com/image/up_img/detail/3/goods_31295/17872137640_Re.jpg">
+            <img src="data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20width%3D%27500%27%20height%3D%27650%27%20viewBox%3D%270%200%20500%20650%27%3E%0A%3Crect%20width%3D%27100%25%27%20height%3D%27100%25%27%20fill%3D%27%23fdfaf6%27/%3E%0A%3Crect%20x%3D%271%27%20y%3D%271%27%20width%3D%27498%27%20height%3D%27648%27%20fill%3D%27none%27%20stroke%3D%27%23ecdfc9%27%20stroke-width%3D%271%27%20stroke-dasharray%3D%275%205%27/%3E%0A%3Cg%20transform%3D%27translate%28250%2C310%29%27%3E%0A%3Crect%20x%3D%27-21%27%20y%3D%27-15%27%20width%3D%2742%27%20height%3D%2730%27%20rx%3D%276%27%20fill%3D%27none%27%20stroke%3D%27%23d9c6a8%27%20stroke-width%3D%271.5%27/%3E%0A%3Ccircle%20cx%3D%27-9%27%20cy%3D%27-6%27%20r%3D%272.8%27%20fill%3D%27%23d9c6a8%27/%3E%0A%3Cpath%20d%3D%27M%20-21%2010%20L%20-6%20-3%20L%204%205%20L%2013%20-6%20L%2021%2010%27%20fill%3D%27none%27%20stroke%3D%27%23d9c6a8%27%20stroke-width%3D%271.5%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27/%3E%0A%3C/g%3E%0A%3Ctext%20x%3D%2750%25%27%20y%3D%27352%27%20font-family%3D%27sans-serif%27%20font-size%3D%2713.5%27%20font-weight%3D%27600%27%20fill%3D%27%23cdb99e%27%20text-anchor%3D%27middle%27%20letter-spacing%3D%270.3%27%3E%EC%B6%94%ED%9B%84%20%EC%B6%94%EA%B0%80%EB%90%A0%20%EC%98%88%EC%A0%95%EC%9E%85%EB%8B%88%EB%8B%A4%3C/text%3E%0A%3C/svg%3E">
+        </div>
+        <div class="ove2-gallery-preview" aria-label="표정 샘플 미리보기"></div>
+    </div>
+
+    <div id="calc"></div>
+    <div class="ove2-card">
+        <div class="ove2-title"><span class="ove2-star">★</span>실시간 견적서<span class="ove2-star">★</span></div>
+
+        <div class="ove2-calc-group-title">① 기본 유형 (필수 선택 · 리깅 별도 · 기본 좌우반전 포즈)</div>
+        <div class="ove2-calc-opt">
+            <label><input type="radio" name="ovBase" value="450000" data-price="450000" checked oninput="(function(c){var t=0;var b=c.querySelector('input[name=ovBase]:checked');if(b)t+=Number(b.getAttribute('data-price'));var bx=c.querySelectorAll('.ove2-calc-opt input[type=checkbox][data-price]');for(var i=0;i<bx.length;i++){if(bx[i].checked)t+=Number(bx[i].getAttribute('data-price'));}var eq=c.querySelector('#ovExprQty');if(eq)t+=Number(eq.value||0)*15000;var pv=c.querySelector('input[name=ovPriv]:checked');if(pv&&pv.value!='none'){var pp=Number(pv.getAttribute('data-price')||0);if(pv.value=='month'){var mq=c.querySelector('#ovMonthQty');pp=pp*Number((mq&&mq.value)||1);}t+=pp;}c.querySelector('.ove2-calc-total .sum').textContent=t.toLocaleString()+'원';})(this.closest('.ove2-card'))"> 흉상 (머리~가슴)</label>
+            <span class="price">450,000원</span>
+        </div>
+        <div class="ove2-calc-opt">
+            <label><input type="radio" name="ovBase" value="600000" data-price="600000" oninput="(function(c){var t=0;var b=c.querySelector('input[name=ovBase]:checked');if(b)t+=Number(b.getAttribute('data-price'));var bx=c.querySelectorAll('.ove2-calc-opt input[type=checkbox][data-price]');for(var i=0;i<bx.length;i++){if(bx[i].checked)t+=Number(bx[i].getAttribute('data-price'));}var eq=c.querySelector('#ovExprQty');if(eq)t+=Number(eq.value||0)*15000;var pv=c.querySelector('input[name=ovPriv]:checked');if(pv&&pv.value!='none'){var pp=Number(pv.getAttribute('data-price')||0);if(pv.value=='month'){var mq=c.querySelector('#ovMonthQty');pp=pp*Number((mq&&mq.value)||1);}t+=pp;}c.querySelector('.ove2-calc-total .sum').textContent=t.toLocaleString()+'원';})(this.closest('.ove2-card'))"> 반신 (머리~허리)</label>
+            <span class="price">600,000원</span>
+        </div>
+        <div class="ove2-calc-opt">
+            <label><input type="radio" name="ovBase" value="750000" data-price="750000" oninput="(function(c){var t=0;var b=c.querySelector('input[name=ovBase]:checked');if(b)t+=Number(b.getAttribute('data-price'));var bx=c.querySelectorAll('.ove2-calc-opt input[type=checkbox][data-price]');for(var i=0;i<bx.length;i++){if(bx[i].checked)t+=Number(bx[i].getAttribute('data-price'));}var eq=c.querySelector('#ovExprQty');if(eq)t+=Number(eq.value||0)*15000;var pv=c.querySelector('input[name=ovPriv]:checked');if(pv&&pv.value!='none'){var pp=Number(pv.getAttribute('data-price')||0);if(pv.value=='month'){var mq=c.querySelector('#ovMonthQty');pp=pp*Number((mq&&mq.value)||1);}t+=pp;}c.querySelector('.ove2-calc-total .sum').textContent=t.toLocaleString()+'원';})(this.closest('.ove2-card'))"> 전신</label>
+            <span class="price">750,000원</span>
+        </div>
+        <div style="font-size:11px; color:var(--sub); margin:6px 0 4px 2px;">※ 위 3개 유형 모두 캐릭터 디자인(3개 시안) + 표정 6개 포함가</div>
+
+        <div class="ove2-calc-group-title">② 추가 옵션</div>
+        <div class="ove2-calc-opt"><label><input type="checkbox" data-price="150000" oninput="(function(c){var t=0;var b=c.querySelector('input[name=ovBase]:checked');if(b)t+=Number(b.getAttribute('data-price'));var bx=c.querySelectorAll('.ove2-calc-opt input[type=checkbox][data-price]');for(var i=0;i<bx.length;i++){if(bx[i].checked)t+=Number(bx[i].getAttribute('data-price'));}var eq=c.querySelector('#ovExprQty');if(eq)t+=Number(eq.value||0)*15000;var pv=c.querySelector('input[name=ovPriv]:checked');if(pv&&pv.value!='none'){var pp=Number(pv.getAttribute('data-price')||0);if(pv.value=='month'){var mq=c.querySelector('#ovMonthQty');pp=pp*Number((mq&&mq.value)||1);}t+=pp;}c.querySelector('.ove2-calc-total .sum').textContent=t.toLocaleString()+'원';})(this.closest('.ove2-card'))"> 삼면도 (옆·뒤 모습 러프)</label><span class="price">150,000원</span></div>
+        <div class="ove2-calc-opt"><label><input type="checkbox" data-price="50000" oninput="(function(c){var t=0;var b=c.querySelector('input[name=ovBase]:checked');if(b)t+=Number(b.getAttribute('data-price'));var bx=c.querySelectorAll('.ove2-calc-opt input[type=checkbox][data-price]');for(var i=0;i<bx.length;i++){if(bx[i].checked)t+=Number(bx[i].getAttribute('data-price'));}var eq=c.querySelector('#ovExprQty');if(eq)t+=Number(eq.value||0)*15000;var pv=c.querySelector('input[name=ovPriv]:checked');if(pv&&pv.value!='none'){var pp=Number(pv.getAttribute('data-price')||0);if(pv.value=='month'){var mq=c.querySelector('#ovMonthQty');pp=pp*Number((mq&&mq.value)||1);}t+=pp;}c.querySelector('.ove2-calc-total .sum').textContent=t.toLocaleString()+'원';})(this.closest('.ove2-card'))"> 좌우비대칭 포즈</label><span class="price">50,000원</span></div>
+        <div class="ove2-calc-opt">
+            <span>표정 추가 (개당 15,000원)</span>
+            <span class="stepper"><input type="number" id="ovExprQty" min="0" value="0" oninput="(function(c){var t=0;var b=c.querySelector('input[name=ovBase]:checked');if(b)t+=Number(b.getAttribute('data-price'));var bx=c.querySelectorAll('.ove2-calc-opt input[type=checkbox][data-price]');for(var i=0;i<bx.length;i++){if(bx[i].checked)t+=Number(bx[i].getAttribute('data-price'));}var eq=c.querySelector('#ovExprQty');if(eq)t+=Number(eq.value||0)*15000;var pv=c.querySelector('input[name=ovPriv]:checked');if(pv&&pv.value!='none'){var pp=Number(pv.getAttribute('data-price')||0);if(pv.value=='month'){var mq=c.querySelector('#ovMonthQty');pp=pp*Number((mq&&mq.value)||1);}t+=pp;}c.querySelector('.ove2-calc-total .sum').textContent=t.toLocaleString()+'원';})(this.closest('.ove2-card'))"> 개</span>
+        </div>
+        <div class="ove2-calc-opt"><label><input type="checkbox" data-price="50000" oninput="(function(c){var t=0;var b=c.querySelector('input[name=ovBase]:checked');if(b)t+=Number(b.getAttribute('data-price'));var bx=c.querySelectorAll('.ove2-calc-opt input[type=checkbox][data-price]');for(var i=0;i<bx.length;i++){if(bx[i].checked)t+=Number(bx[i].getAttribute('data-price'));}var eq=c.querySelector('#ovExprQty');if(eq)t+=Number(eq.value||0)*15000;var pv=c.querySelector('input[name=ovPriv]:checked');if(pv&&pv.value!='none'){var pp=Number(pv.getAttribute('data-price')||0);if(pv.value=='month'){var mq=c.querySelector('#ovMonthQty');pp=pp*Number((mq&&mq.value)||1);}t+=pp;}c.querySelector('.ove2-calc-total .sum').textContent=t.toLocaleString()+'원';})(this.closest('.ove2-card'))"> 겉옷 파츠 추가</label><span class="price">50,000원~</span></div>
+        <div class="ove2-calc-opt"><label><input type="checkbox" data-price="100000" oninput="(function(c){var t=0;var b=c.querySelector('input[name=ovBase]:checked');if(b)t+=Number(b.getAttribute('data-price'));var bx=c.querySelectorAll('.ove2-calc-opt input[type=checkbox][data-price]');for(var i=0;i<bx.length;i++){if(bx[i].checked)t+=Number(bx[i].getAttribute('data-price'));}var eq=c.querySelector('#ovExprQty');if(eq)t+=Number(eq.value||0)*15000;var pv=c.querySelector('input[name=ovPriv]:checked');if(pv&&pv.value!='none'){var pp=Number(pv.getAttribute('data-price')||0);if(pv.value=='month'){var mq=c.querySelector('#ovMonthQty');pp=pp*Number((mq&&mq.value)||1);}t+=pp;}c.querySelector('.ove2-calc-total .sum').textContent=t.toLocaleString()+'원';})(this.closest('.ove2-card'))"> 헤어 추가</label><span class="price">100,000원~</span></div>
+        <div class="ove2-calc-opt"><label><input type="checkbox" data-price="70000" oninput="(function(c){var t=0;var b=c.querySelector('input[name=ovBase]:checked');if(b)t+=Number(b.getAttribute('data-price'));var bx=c.querySelectorAll('.ove2-calc-opt input[type=checkbox][data-price]');for(var i=0;i<bx.length;i++){if(bx[i].checked)t+=Number(bx[i].getAttribute('data-price'));}var eq=c.querySelector('#ovExprQty');if(eq)t+=Number(eq.value||0)*15000;var pv=c.querySelector('input[name=ovPriv]:checked');if(pv&&pv.value!='none'){var pp=Number(pv.getAttribute('data-price')||0);if(pv.value=='month'){var mq=c.querySelector('#ovMonthQty');pp=pp*Number((mq&&mq.value)||1);}t+=pp;}c.querySelector('.ove2-calc-total .sum').textContent=t.toLocaleString()+'원';})(this.closest('.ove2-card'))"> 긴 머리 추가금 (가슴 이상 길이)</label><span class="price">70,000원</span></div>
+        <div class="ove2-calc-opt"><label><input type="checkbox" data-price="70000" oninput="(function(c){var t=0;var b=c.querySelector('input[name=ovBase]:checked');if(b)t+=Number(b.getAttribute('data-price'));var bx=c.querySelectorAll('.ove2-calc-opt input[type=checkbox][data-price]');for(var i=0;i<bx.length;i++){if(bx[i].checked)t+=Number(bx[i].getAttribute('data-price'));}var eq=c.querySelector('#ovExprQty');if(eq)t+=Number(eq.value||0)*15000;var pv=c.querySelector('input[name=ovPriv]:checked');if(pv&&pv.value!='none'){var pp=Number(pv.getAttribute('data-price')||0);if(pv.value=='month'){var mq=c.querySelector('#ovMonthQty');pp=pp*Number((mq&&mq.value)||1);}t+=pp;}c.querySelector('.ove2-calc-total .sum').textContent=t.toLocaleString()+'원';})(this.closest('.ove2-card'))"> 의상 추가</label><span class="price">70,000원~</span></div>
+        <div class="ove2-calc-opt"><label><input type="checkbox" data-price="50000" oninput="(function(c){var t=0;var b=c.querySelector('input[name=ovBase]:checked');if(b)t+=Number(b.getAttribute('data-price'));var bx=c.querySelectorAll('.ove2-calc-opt input[type=checkbox][data-price]');for(var i=0;i<bx.length;i++){if(bx[i].checked)t+=Number(bx[i].getAttribute('data-price'));}var eq=c.querySelector('#ovExprQty');if(eq)t+=Number(eq.value||0)*15000;var pv=c.querySelector('input[name=ovPriv]:checked');if(pv&&pv.value!='none'){var pp=Number(pv.getAttribute('data-price')||0);if(pv.value=='month'){var mq=c.querySelector('#ovMonthQty');pp=pp*Number((mq&&mq.value)||1);}t+=pp;}c.querySelector('.ove2-calc-total .sum').textContent=t.toLocaleString()+'원';})(this.closest('.ove2-card'))"> 팔 동작 추가</label><span class="price">50,000원~</span></div>
+        <div class="ove2-calc-opt"><label><input type="checkbox" data-price="20000" oninput="(function(c){var t=0;var b=c.querySelector('input[name=ovBase]:checked');if(b)t+=Number(b.getAttribute('data-price'));var bx=c.querySelectorAll('.ove2-calc-opt input[type=checkbox][data-price]');for(var i=0;i<bx.length;i++){if(bx[i].checked)t+=Number(bx[i].getAttribute('data-price'));}var eq=c.querySelector('#ovExprQty');if(eq)t+=Number(eq.value||0)*15000;var pv=c.querySelector('input[name=ovPriv]:checked');if(pv&&pv.value!='none'){var pp=Number(pv.getAttribute('data-price')||0);if(pv.value=='month'){var mq=c.querySelector('#ovMonthQty');pp=pp*Number((mq&&mq.value)||1);}t+=pp;}c.querySelector('.ove2-calc-total .sum').textContent=t.toLocaleString()+'원';})(this.closest('.ove2-card'))"> 기타 악세사리 파츠 추가</label><span class="price">20,000원~</span></div>
+        <div class="ove2-calc-opt"><label><input type="checkbox" data-price="100000" oninput="(function(c){var t=0;var b=c.querySelector('input[name=ovBase]:checked');if(b)t+=Number(b.getAttribute('data-price'));var bx=c.querySelectorAll('.ove2-calc-opt input[type=checkbox][data-price]');for(var i=0;i<bx.length;i++){if(bx[i].checked)t+=Number(bx[i].getAttribute('data-price'));}var eq=c.querySelector('#ovExprQty');if(eq)t+=Number(eq.value||0)*15000;var pv=c.querySelector('input[name=ovPriv]:checked');if(pv&&pv.value!='none'){var pp=Number(pv.getAttribute('data-price')||0);if(pv.value=='month'){var mq=c.querySelector('#ovMonthQty');pp=pp*Number((mq&&mq.value)||1);}t+=pp;}c.querySelector('.ove2-calc-total .sum').textContent=t.toLocaleString()+'원';})(this.closest('.ove2-card'))"> 몸체 추가비용 (신의상 작업시)</label><span class="price">100,000원</span></div>
+        <div class="ove2-calc-opt"><label><input type="checkbox" data-price="300000" oninput="(function(c){var t=0;var b=c.querySelector('input[name=ovBase]:checked');if(b)t+=Number(b.getAttribute('data-price'));var bx=c.querySelectorAll('.ove2-calc-opt input[type=checkbox][data-price]');for(var i=0;i<bx.length;i++){if(bx[i].checked)t+=Number(bx[i].getAttribute('data-price'));}var eq=c.querySelector('#ovExprQty');if(eq)t+=Number(eq.value||0)*15000;var pv=c.querySelector('input[name=ovPriv]:checked');if(pv&&pv.value!='none'){var pp=Number(pv.getAttribute('data-price')||0);if(pv.value=='month'){var mq=c.querySelector('#ovMonthQty');pp=pp*Number((mq&&mq.value)||1);}t+=pp;}c.querySelector('.ove2-calc-total .sum').textContent=t.toLocaleString()+'원';})(this.closest('.ove2-card'))"> 신의상 작업 (전신 기준)</label><span class="price">300,000원~</span></div>
+        <div class="ove2-calc-opt"><label><input type="checkbox" data-price="200000" oninput="(function(c){var t=0;var b=c.querySelector('input[name=ovBase]:checked');if(b)t+=Number(b.getAttribute('data-price'));var bx=c.querySelectorAll('.ove2-calc-opt input[type=checkbox][data-price]');for(var i=0;i<bx.length;i++){if(bx[i].checked)t+=Number(bx[i].getAttribute('data-price'));}var eq=c.querySelector('#ovExprQty');if(eq)t+=Number(eq.value||0)*15000;var pv=c.querySelector('input[name=ovPriv]:checked');if(pv&&pv.value!='none'){var pp=Number(pv.getAttribute('data-price')||0);if(pv.value=='month'){var mq=c.querySelector('#ovMonthQty');pp=pp*Number((mq&&mq.value)||1);}t+=pp;}c.querySelector('.ove2-calc-total .sum').textContent=t.toLocaleString()+'원';})(this.closest('.ove2-card'))"> 빠른 마감 (2주 내 완성)</label><span class="price">200,000원</span></div>
+        <div class="ove2-calc-opt"><label><input type="checkbox" data-price="300000" oninput="(function(c){var t=0;var b=c.querySelector('input[name=ovBase]:checked');if(b)t+=Number(b.getAttribute('data-price'));var bx=c.querySelectorAll('.ove2-calc-opt input[type=checkbox][data-price]');for(var i=0;i<bx.length;i++){if(bx[i].checked)t+=Number(bx[i].getAttribute('data-price'));}var eq=c.querySelector('#ovExprQty');if(eq)t+=Number(eq.value||0)*15000;var pv=c.querySelector('input[name=ovPriv]:checked');if(pv&&pv.value!='none'){var pp=Number(pv.getAttribute('data-price')||0);if(pv.value=='month'){var mq=c.querySelector('#ovMonthQty');pp=pp*Number((mq&&mq.value)||1);}t+=pp;}c.querySelector('.ove2-calc-total .sum').textContent=t.toLocaleString()+'원';})(this.closest('.ove2-card'))"> 저작권 양도 (자세한 사항은 공지 확인)</label><span class="price">300,000원</span></div>
+
+        <div class="ove2-calc-group-title">③ 비공개 여부</div>
+        <div class="ove2-calc-opt"><label><input type="radio" name="ovPriv" value="none" data-price="0" checked oninput="(function(c){var t=0;var b=c.querySelector('input[name=ovBase]:checked');if(b)t+=Number(b.getAttribute('data-price'));var bx=c.querySelectorAll('.ove2-calc-opt input[type=checkbox][data-price]');for(var i=0;i<bx.length;i++){if(bx[i].checked)t+=Number(bx[i].getAttribute('data-price'));}var eq=c.querySelector('#ovExprQty');if(eq)t+=Number(eq.value||0)*15000;var pv=c.querySelector('input[name=ovPriv]:checked');if(pv&&pv.value!='none'){var pp=Number(pv.getAttribute('data-price')||0);if(pv.value=='month'){var mq=c.querySelector('#ovMonthQty');pp=pp*Number((mq&&mq.value)||1);}t+=pp;}c.querySelector('.ove2-calc-total .sum').textContent=t.toLocaleString()+'원';})(this.closest('.ove2-card'))"> 공개 (기본)</label><span class="price">0원</span></div>
+        <div class="ove2-calc-opt"><label><input type="radio" name="ovPriv" value="forever" data-price="400000" oninput="(function(c){var t=0;var b=c.querySelector('input[name=ovBase]:checked');if(b)t+=Number(b.getAttribute('data-price'));var bx=c.querySelectorAll('.ove2-calc-opt input[type=checkbox][data-price]');for(var i=0;i<bx.length;i++){if(bx[i].checked)t+=Number(bx[i].getAttribute('data-price'));}var eq=c.querySelector('#ovExprQty');if(eq)t+=Number(eq.value||0)*15000;var pv=c.querySelector('input[name=ovPriv]:checked');if(pv&&pv.value!='none'){var pp=Number(pv.getAttribute('data-price')||0);if(pv.value=='month'){var mq=c.querySelector('#ovMonthQty');pp=pp*Number((mq&&mq.value)||1);}t+=pp;}c.querySelector('.ove2-calc-total .sum').textContent=t.toLocaleString()+'원';})(this.closest('.ove2-card'))"> 영구 비공개</label><span class="price">400,000원</span></div>
+        <div class="ove2-calc-opt">
+            <label><input type="radio" name="ovPriv" value="month" data-price="70000" oninput="(function(c){var t=0;var b=c.querySelector('input[name=ovBase]:checked');if(b)t+=Number(b.getAttribute('data-price'));var bx=c.querySelectorAll('.ove2-calc-opt input[type=checkbox][data-price]');for(var i=0;i<bx.length;i++){if(bx[i].checked)t+=Number(bx[i].getAttribute('data-price'));}var eq=c.querySelector('#ovExprQty');if(eq)t+=Number(eq.value||0)*15000;var pv=c.querySelector('input[name=ovPriv]:checked');if(pv&&pv.value!='none'){var pp=Number(pv.getAttribute('data-price')||0);if(pv.value=='month'){var mq=c.querySelector('#ovMonthQty');pp=pp*Number((mq&&mq.value)||1);}t+=pp;}c.querySelector('.ove2-calc-total .sum').textContent=t.toLocaleString()+'원';})(this.closest('.ove2-card'))"> 한달 비공개 (단위 추가 가능)</label>
+            <span class="stepper"><input type="number" id="ovMonthQty" min="1" value="1" oninput="(function(c){var t=0;var b=c.querySelector('input[name=ovBase]:checked');if(b)t+=Number(b.getAttribute('data-price'));var bx=c.querySelectorAll('.ove2-calc-opt input[type=checkbox][data-price]');for(var i=0;i<bx.length;i++){if(bx[i].checked)t+=Number(bx[i].getAttribute('data-price'));}var eq=c.querySelector('#ovExprQty');if(eq)t+=Number(eq.value||0)*15000;var pv=c.querySelector('input[name=ovPriv]:checked');if(pv&&pv.value!='none'){var pp=Number(pv.getAttribute('data-price')||0);if(pv.value=='month'){var mq=c.querySelector('#ovMonthQty');pp=pp*Number((mq&&mq.value)||1);}t+=pp;}c.querySelector('.ove2-calc-total .sum').textContent=t.toLocaleString()+'원';})(this.closest('.ove2-card'))"> 개월 × 70,000원</span></div>
+
+        <div class="ove2-calc-total"><span>예상 견적</span><span class="sum">450,000원</span></div>
+        <div class="ove2-calc-caveat">
+            ※ 리깅 비용은 포함되어 있지 않으며, 기본 좌우반전 포즈 기준입니다.<br>
+            ※ 보수적으로 책정한 최소 금액입니다. 정확한 견적은 문의 부탁드립니다.
+        </div>
+    </div>
+
+    <!-- ===== 문의 양식 (입력 + 복사) ===== -->
+    <div id="inquiry"></div>
+    <div class="ove2-card">
+        <div class="ove2-title"><span class="ove2-star">★</span>문의 양식<span class="ove2-star">★</span></div>
+        <div class="ove2-form-box">
+            <div class="ove2-fld">
+                <div class="q">1. 활동명 <span class="sub">(닉네임, SNS 계정 등)</span></div>
+                <input type="text" id="ovQ1" placeholder="입력해주세요">
+            </div>
+            <div class="ove2-fld">
+                <div class="q">2. 전신 / 반신 / 흉상</div>
+                <div class="ove2-check-row">
+                    <label><input type="checkbox" id="ovQ2a"> 전신</label>
+                    <label><input type="checkbox" id="ovQ2b"> 반신</label>
+                    <label><input type="checkbox" id="ovQ2c"> 흉상</label>
+                </div>
+            </div>
+            <div class="ove2-fld">
+                <div class="q">3. 캐릭터 설명 <span class="sub">(성별/키/나이/비율/헤어/눈동자/성격 등 최대한 자세히)</span></div>
+                <textarea id="ovQ3" placeholder="입력해주세요"></textarea>
+            </div>
+            <div class="ove2-fld">
+                <div class="q">4. 캐릭터 디자인 자료 <span class="sub">(상의/하의/아우터/신발/장신구 등 참고 링크나 설명)</span></div>
+                <textarea id="ovQ4" placeholder="입력해주세요"></textarea>
+            </div>
+            <div class="ove2-fld">
+                <div class="q">5. 기타 요청 / 질문 사항 <span class="sub">(추가금 문의, 협업 유무, 작업시 주의사항 등)</span></div>
+                <textarea id="ovQ5" placeholder="입력해주세요"></textarea>
+            </div>
+        </div>
+        <textarea id="oveFormText" style="position:absolute; left:-9999px;"></textarea>
+        <button class="ove2-copy-btn" onclick="
+            var type=[];
+            if(document.getElementById('ovQ2a').checked)type.push('전신');
+            if(document.getElementById('ovQ2b').checked)type.push('반신');
+            if(document.getElementById('ovQ2c').checked)type.push('흉상');
+            var out = '1. 활동명 : ' + document.getElementById('ovQ1').value + '\n' +
+                      '2. 전신/반신/흉상 : ' + type.join(', ') + '\n' +
+                      '3. 캐릭터 설명 : ' + document.getElementById('ovQ3').value + '\n' +
+                      '4. 캐릭터 디자인 자료 : ' + document.getElementById('ovQ4').value + '\n' +
+                      '5. 기타 요청/질문 사항 : ' + document.getElementById('ovQ5').value;
+            var t=document.getElementById('oveFormText');
+            t.value = out;
+            t.style.position='fixed'; t.style.left='0'; t.select();
+            try{document.execCommand('copy');}catch(e){}
+            t.style.position='absolute'; t.style.left='-9999px';
+            this.textContent='복사 완료!'; var b=this;
+            setTimeout(function(){b.textContent='입력한 내용 복사하기';},1500);
+        ">입력한 내용 복사하기</button>
+    </div>
+
+    <!-- ===== FAQ 아코디언 ===== -->
+    <div id="faq"></div>
+    <div class="ove2-card ove2-faq">
+        <div class="ove2-title"><span class="ove2-star">★</span>자주 묻는 질문<span class="ove2-star">★</span></div>
+        <details>
+            <summary>수정은 몇 번까지 가능한가요?</summary>
+            <div class="a">디자인 컨펌 & 1차 컨펌(큰 형태 수정)과 2차 컨펌(작은 형태 수정) 두 단계로 진행됩니다.</div>
+        </details>
+        <details>
+            <summary>결제는 어떻게 진행되나요?</summary>
+            <div class="a">문의 견적이 확정되면 결제가 진행됩니다. 문의 전 결제는 삼가주세요. 분납 결제도 가능하니 편하게 말씀해 주세요.</div>
+        </details>
+        <details>
+            <summary>예약이 가능한가요?</summary>
+            <div class="a">견적 확인 후 선결제 후에 예약이 가능합니다.</div>
+        </details>
+        <details>
+            <summary>리깅은 포함인가요?</summary>
+            <div class="a">리깅 비용은 포함되어 있지 않습니다. 협업을 통해 결제 시 할인된 가격에 의뢰가 가능합니다.</div>
+        </details>
+        <details>
+            <summary>이미 모델이 있는데 신의상 작업이 가능한가요?</summary>
+            <div class="a">저작권 구매가 완료되었거나 허가가 난 모델에 대하여 작업이 가능합니다.</div>
+        </details>
+    </div>
+
+</div>
+
+<!-- 사진 확대보기 창: 위 갤러리들이 공용으로 사용합니다. 여기는 수정하실 필요 없습니다 -->
+<div id="ove2-lightbox" class="ove2-lb-modal" onclick="closeOve2Lightbox()">
+    <span class="ove2-lb-modal-close" onclick="closeOve2Lightbox()">&times;</span>
+    <img id="ove2-lightbox-img" src="" alt="확대 이미지">
+</div>
+
+<script>
+/* 사진 갤러리(포트폴리오/디자인 샘플/표정 샘플) 자동 처리
+   - .ove2-gallery 안의 <img> 목록만 보고 하단 미리보기 썸네일을 자동 생성합니다.
+   - 메인 사진을 클릭하면 확대보기가 열립니다.
+   - 사진을 추가/삭제/교체하고 싶으면 .ove2-gallery 안의 <img src="..."> 줄만 수정하면 됩니다. */
+function initOve2Galleries() {
+    document.querySelectorAll('.ove2-gallery').forEach(function (gallery) {
+        var imgs = gallery.querySelectorAll('img');
+        var preview = gallery.nextElementSibling;
+        var label = gallery.getAttribute('data-label') || '이미지';
+
+        if (preview && preview.classList.contains('ove2-gallery-preview')) {
+            preview.innerHTML = '';
+            imgs.forEach(function (img, idx) {
+                var btn = document.createElement('button');
+                btn.type = 'button';
+                var thumb = document.createElement('img');
+                thumb.src = img.getAttribute('src');
+                thumb.alt = label + ' ' + (idx + 1) + ' 미리보기';
+                btn.appendChild(thumb);
+                btn.addEventListener('click', function () {
+                    gallery.scrollTo({
+                        left: img.offsetLeft - gallery.offsetLeft - 6,
+                        behavior: 'smooth'
+                    });
+                });
+                preview.appendChild(btn);
+            });
+        }
+
+        imgs.forEach(function (img) {
+            img.addEventListener('click', function () {
+                openOve2Lightbox(img.getAttribute('src'));
+            });
+        });
     });
+}
 
-    observer.observe(document.body);
-  }
+function openOve2Lightbox(src) {
+    var modal = document.getElementById('ove2-lightbox');
+    var img = document.getElementById('ove2-lightbox-img');
+    img.src = src;
+    modal.classList.add('open');
+}
+function closeOve2Lightbox() {
+    document.getElementById('ove2-lightbox').classList.remove('open');
+}
 
-  /* 초기 실행 */
-  sendHeight();
+initOve2Galleries();
+<script>
+function sendHeight() {
+    window.parent.postMessage({ frameHeight: document.body.scrollHeight }, '*');
+}
+
+window.onload = function() {
+    sendHeight();
+    setTimeout(sendHeight, 500);
+};
+
+new ResizeObserver(sendHeight).observe(document.body);
 </script>
 </body>
 </html>
