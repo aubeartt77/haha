@@ -636,31 +636,9 @@ initOve2Galleries();
   }
   renderSlots();
 
-<script>
 function sendHeight() {
-    var height = document.documentElement.scrollHeight;
-
-    window.parent.postMessage({
-        frameHeight: height
-    }, '*');
+    window.parent.postMessage({ frameHeight: document.body.scrollHeight }, '*');
 }
-
-window.addEventListener('load', function () {
-    sendHeight();
-
-    setTimeout(sendHeight, 300);
-    setTimeout(sendHeight, 1000);
-    setTimeout(sendHeight, 2000);
-});
-
-window.addEventListener('resize', sendHeight);
-
-if (typeof ResizeObserver !== 'undefined') {
-    new ResizeObserver(function () {
-        sendHeight();
-    }).observe(document.documentElement);
-}
-</script>
 
 
   }
