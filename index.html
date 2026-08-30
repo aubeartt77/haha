@@ -638,27 +638,30 @@ initOve2Galleries();
 
 <script>
 function sendHeight() {
-    var height = Math.max(
-        document.body.scrollHeight,
-        document.documentElement.scrollHeight
-    );
+    var height = document.documentElement.scrollHeight;
 
     window.parent.postMessage({
         frameHeight: height
     }, '*');
 }
 
-window.addEventListener('load', sendHeight);
+window.addEventListener('load', function () {
+    sendHeight();
+
+    setTimeout(sendHeight, 300);
+    setTimeout(sendHeight, 1000);
+    setTimeout(sendHeight, 2000);
+});
+
 window.addEventListener('resize', sendHeight);
 
-setTimeout(sendHeight, 300);
-setTimeout(sendHeight, 1000);
-setTimeout(sendHeight, 2000);
-
 if (typeof ResizeObserver !== 'undefined') {
-    new ResizeObserver(sendHeight).observe(document.body);
+    new ResizeObserver(function () {
+        sendHeight();
+    }).observe(document.documentElement);
 }
 </script>
+
 
   }
   window.onload = function() {
