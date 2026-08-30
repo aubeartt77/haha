@@ -57,13 +57,13 @@ html { scroll-behavior: smooth; }
 }
 
 /* ===== 프로필 카드 ===== */
-.ove2-profile { display: flex; align-items: center; gap: 34px; }
+.ove2-profile { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 16px; }
 .ove2-profile .avatar {
     width: 128px; height: 128px; border-radius: 50%; object-fit: cover;
     border: 3px solid #fff; box-shadow: 0 5px 14px rgba(190,130,70,0.16); flex: 0 0 auto;
 }
 .ove2-profile .info { flex: 1; }
-.ove2-profile .info h3 { display:flex; align-items:center; font-size:15.5px; font-weight:700; margin:0 0 12px 0; }
+.ove2-profile .info h3 { display:flex; align-items:center; justify-content:center; font-size:15.5px; font-weight:700; margin:0 0 12px 0; }
 .ove2-profile .info p { margin: 4px 0; font-size: 13.5px; font-weight: 500; line-height: 1.7; color: var(--sub); }
 
 /* ===== 슬롯 현황 ===== */
@@ -77,6 +77,7 @@ html { scroll-behavior: smooth; }
 .ove2-month .m { text-align:center; font-size:12.5px; font-weight:600; }
 .ove2-month .m .cap { display:block; margin-bottom:8px; font-size:13.5px; font-weight:700; }
 .ove2-month .m .dotrow { font-size:17px; letter-spacing:5px; color: var(--accent); }
+.ove2-month .m .nick { display:block; margin-top:6px; font-size:11.5px; font-weight:600; color: var(--sub); }
 
 /* ===== 공지사항 ===== */
 .ove2-list { list-style:none; margin:0; padding:0; text-align:left; }
@@ -109,13 +110,11 @@ html { scroll-behavior: smooth; }
     scroll-snap-type:x proximity;
     -webkit-overflow-scrolling:touch;
 }
-.ove2-gallery a {
+.ove2-gallery img {
     display:block;
     flex:0 0 calc(50% - 8px);
     min-width:calc(50% - 8px);
     scroll-snap-align:start;
-}
-.ove2-gallery img {
     width:100%;
     height:auto;
     max-width:none;
@@ -183,11 +182,21 @@ html { scroll-behavior: smooth; }
     object-fit: cover;
 }
 
-.ove2-lb { display:none; position:fixed; inset:0; z-index:99999; align-items:center; justify-content:center; padding:30px; box-sizing:border-box; }
-.ove2-lb:target { display:flex; }
-.ove2-lb-bg { position:absolute; inset:0; background:rgba(30,20,10,0.85); z-index:1; }
-.ove2-lb img { position:relative; z-index:2; max-width:92vw; max-height:90vh; border-radius:10px; }
-.ove2-lb-close { position:fixed; top:18px; right:26px; color:#fff; font-size:30px; z-index:3; text-decoration:none; font-weight:300; }
+/* 사진 확대보기 - 모든 갤러리 공용 (사진 목록에서 자동으로 열림, 별도 편집 불필요) */
+.ove2-lb-modal {
+    display:none;
+    position:fixed;
+    inset:0;
+    z-index:99999;
+    align-items:center;
+    justify-content:center;
+    padding:30px;
+    box-sizing:border-box;
+    background:rgba(30,20,10,0.85);
+}
+.ove2-lb-modal.open { display:flex; }
+.ove2-lb-modal img { max-width:92vw; max-height:90vh; border-radius:10px; }
+.ove2-lb-modal .ove2-lb-modal-close { position:fixed; top:18px; right:26px; color:#fff; font-size:30px; z-index:3; cursor:pointer; font-weight:300; }
 
 /* ===== 실시간 견적 계산기 ===== */
 .ove2-calc-group-title { font-size:12.5px; font-weight:700; color: var(--pink-deep); margin: 18px 0 6px 0; }
@@ -334,9 +343,9 @@ html { scroll-behavior: smooth; }
             <div class="ove2-collab-link"><a href="https://artmug.kr/index.php?channel=view&uid=59888" target="_blank">NENI님 페이지 바로가기</a></div>
             <div class="ove2-collab-gallery">
                 <!-- 이미지 URL만 교체해주세요. GIF도 그대로 사용 가능합니다 -->
-                <img src="https://via.placeholder.com/200x260?text=NENI+1">
-                <img src="https://via.placeholder.com/200x260?text=NENI+2">
-                <img src="https://via.placeholder.com/200x260?text=NENI+3">
+                <img src="data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20width%3D%27400%27%20height%3D%27300%27%20viewBox%3D%270%200%20400%20300%27%3E%0A%3Crect%20width%3D%27100%25%27%20height%3D%27100%25%27%20fill%3D%27%23fdf6ec%27/%3E%0A%3Crect%20x%3D%276%27%20y%3D%276%27%20width%3D%27388%27%20height%3D%27288%27%20fill%3D%27none%27%20stroke%3D%27%23ecc99a%27%20stroke-width%3D%273%27%20stroke-dasharray%3D%2710%208%27/%3E%0A%3Ctext%20x%3D%2750%25%27%20y%3D%2750%25%27%20font-family%3D%27sans-serif%27%20font-size%3D%2722%27%20font-weight%3D%27700%27%20fill%3D%27%23c9a578%27%20text-anchor%3D%27middle%27%20dominant-baseline%3D%27middle%27%3E%EC%B6%94%ED%9B%84%20%EC%B6%94%EA%B0%80%EB%90%A0%20%EC%98%88%EC%A0%95%EC%9E%85%EB%8B%88%EB%8B%A4%3C/text%3E%0A%3C/svg%3E">
+                <img src="data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20width%3D%27400%27%20height%3D%27300%27%20viewBox%3D%270%200%20400%20300%27%3E%0A%3Crect%20width%3D%27100%25%27%20height%3D%27100%25%27%20fill%3D%27%23fdf6ec%27/%3E%0A%3Crect%20x%3D%276%27%20y%3D%276%27%20width%3D%27388%27%20height%3D%27288%27%20fill%3D%27none%27%20stroke%3D%27%23ecc99a%27%20stroke-width%3D%273%27%20stroke-dasharray%3D%2710%208%27/%3E%0A%3Ctext%20x%3D%2750%25%27%20y%3D%2750%25%27%20font-family%3D%27sans-serif%27%20font-size%3D%2722%27%20font-weight%3D%27700%27%20fill%3D%27%23c9a578%27%20text-anchor%3D%27middle%27%20dominant-baseline%3D%27middle%27%3E%EC%B6%94%ED%9B%84%20%EC%B6%94%EA%B0%80%EB%90%A0%20%EC%98%88%EC%A0%95%EC%9E%85%EB%8B%88%EB%8B%A4%3C/text%3E%0A%3C/svg%3E">
+                <img src="data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20width%3D%27400%27%20height%3D%27300%27%20viewBox%3D%270%200%20400%20300%27%3E%0A%3Crect%20width%3D%27100%25%27%20height%3D%27100%25%27%20fill%3D%27%23fdf6ec%27/%3E%0A%3Crect%20x%3D%276%27%20y%3D%276%27%20width%3D%27388%27%20height%3D%27288%27%20fill%3D%27none%27%20stroke%3D%27%23ecc99a%27%20stroke-width%3D%273%27%20stroke-dasharray%3D%2710%208%27/%3E%0A%3Ctext%20x%3D%2750%25%27%20y%3D%2750%25%27%20font-family%3D%27sans-serif%27%20font-size%3D%2722%27%20font-weight%3D%27700%27%20fill%3D%27%23c9a578%27%20text-anchor%3D%27middle%27%20dominant-baseline%3D%27middle%27%3E%EC%B6%94%ED%9B%84%20%EC%B6%94%EA%B0%80%EB%90%A0%20%EC%98%88%EC%A0%95%EC%9E%85%EB%8B%88%EB%8B%A4%3C/text%3E%0A%3C/svg%3E">
             </div>
         </div>
 
@@ -345,8 +354,8 @@ html { scroll-behavior: smooth; }
             <div class="ove2-collab-desc">리깅 5만원 할인 + 표정 1개 추가 작업</div>
             <div class="ove2-collab-link"><a href="https://artmug.kr/index.php?channel=view&uid=25829" target="_blank">세르팡님 페이지 바로가기</a></div>
             <div class="ove2-collab-gallery">
-                <img src="https://via.placeholder.com/200x260?text=세르팡+1">
-                <img src="https://via.placeholder.com/200x260?text=세르팡+2">
+                <img src="data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20width%3D%27400%27%20height%3D%27300%27%20viewBox%3D%270%200%20400%20300%27%3E%0A%3Crect%20width%3D%27100%25%27%20height%3D%27100%25%27%20fill%3D%27%23fdf6ec%27/%3E%0A%3Crect%20x%3D%276%27%20y%3D%276%27%20width%3D%27388%27%20height%3D%27288%27%20fill%3D%27none%27%20stroke%3D%27%23ecc99a%27%20stroke-width%3D%273%27%20stroke-dasharray%3D%2710%208%27/%3E%0A%3Ctext%20x%3D%2750%25%27%20y%3D%2750%25%27%20font-family%3D%27sans-serif%27%20font-size%3D%2722%27%20font-weight%3D%27700%27%20fill%3D%27%23c9a578%27%20text-anchor%3D%27middle%27%20dominant-baseline%3D%27middle%27%3E%EC%B6%94%ED%9B%84%20%EC%B6%94%EA%B0%80%EB%90%A0%20%EC%98%88%EC%A0%95%EC%9E%85%EB%8B%88%EB%8B%A4%3C/text%3E%0A%3C/svg%3E">
+                <img src="data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20width%3D%27400%27%20height%3D%27300%27%20viewBox%3D%270%200%20400%20300%27%3E%0A%3Crect%20width%3D%27100%25%27%20height%3D%27100%25%27%20fill%3D%27%23fdf6ec%27/%3E%0A%3Crect%20x%3D%276%27%20y%3D%276%27%20width%3D%27388%27%20height%3D%27288%27%20fill%3D%27none%27%20stroke%3D%27%23ecc99a%27%20stroke-width%3D%273%27%20stroke-dasharray%3D%2710%208%27/%3E%0A%3Ctext%20x%3D%2750%25%27%20y%3D%2750%25%27%20font-family%3D%27sans-serif%27%20font-size%3D%2722%27%20font-weight%3D%27700%27%20fill%3D%27%23c9a578%27%20text-anchor%3D%27middle%27%20dominant-baseline%3D%27middle%27%3E%EC%B6%94%ED%9B%84%20%EC%B6%94%EA%B0%80%EB%90%A0%20%EC%98%88%EC%A0%95%EC%9E%85%EB%8B%88%EB%8B%A4%3C/text%3E%0A%3C/svg%3E">
             </div>
         </div>
 
@@ -355,71 +364,58 @@ html { scroll-behavior: smooth; }
             <div class="ove2-collab-desc">리깅 10만원 할인+일러스트 5만원 할인+표정 1개 추가 작업</div>
             <div class="ove2-collab-link"><a href="https://artmug.kr/index.php?channel=view&uid=58777" target="_blank">솜이님 페이지 바로가기</a></div>
             <div class="ove2-collab-gallery">
-                <img src="https://via.placeholder.com/300x160?text=솜이+협업+할인">
+                <img src="data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20width%3D%27400%27%20height%3D%27300%27%20viewBox%3D%270%200%20400%20300%27%3E%0A%3Crect%20width%3D%27100%25%27%20height%3D%27100%25%27%20fill%3D%27%23fdf6ec%27/%3E%0A%3Crect%20x%3D%276%27%20y%3D%276%27%20width%3D%27388%27%20height%3D%27288%27%20fill%3D%27none%27%20stroke%3D%27%23ecc99a%27%20stroke-width%3D%273%27%20stroke-dasharray%3D%2710%208%27/%3E%0A%3Ctext%20x%3D%2750%25%27%20y%3D%2750%25%27%20font-family%3D%27sans-serif%27%20font-size%3D%2722%27%20font-weight%3D%27700%27%20fill%3D%27%23c9a578%27%20text-anchor%3D%27middle%27%20dominant-baseline%3D%27middle%27%3E%EC%B6%94%ED%9B%84%20%EC%B6%94%EA%B0%80%EB%90%A0%20%EC%98%88%EC%A0%95%EC%9E%85%EB%8B%88%EB%8B%A4%3C/text%3E%0A%3C/svg%3E">
             </div>
         </div>
     </div>
 
     <!-- ===== 포트폴리오 ===== -->
+    <!-- 사진 추가/삭제/교체 방법: 아래 .ove2-gallery 안에 <img src="사진주소"> 한 줄씩만 있으면 됩니다.
+         - 교체: src="..." 안의 주소만 새 사진 주소로 바꾸기
+         - 추가: <img src="사진주소"> 한 줄을 원하는 위치에 복사해서 붙여넣기
+         - 삭제: 지우고 싶은 <img src="..."> 한 줄 통째로 삭제
+         미리보기 썸네일과 확대보기는 자동으로 만들어지므로 여기만 수정하면 됩니다! -->
     <div id="portfolio"></div>
     <div class="ove2-card">
         <div class="ove2-title"><span class="ove2-star">★</span>포트폴리오<span class="ove2-star">★</span></div>
         <div class="ove2-subtext">오른쪽으로 넘길 수록 예전 작업물 입니다</div>
-        <div class="ove2-gallery">
-            <a id="pf1" href="#lb1"><img src="https://artmugfile3.cafe24.com/image/up_img/detail/3/goods_31295/17818640090_Re.jpg"></a>
-            <a id="pf2" href="#lb2"><img src="https://artmugfile3.cafe24.com/image/up_img/detail/3/goods_31295/17870382510_Re.jpg"></a>
-            <a id="pf3" href="#lb3"><img src="https://artmugfile3.cafe24.com/image/up_img/detail/3/goods_31295/17872137640_Re.jpg"></a>
-            <a id="pf4" href="#lb4"><img src="https://artmugfile3.cafe24.com/image/up_img/detail/3/goods_31295/17867237970_Re.jpg"></a>
-            <a id="pf5" href="#lb5"><img src="https://artmugfile3.cafe24.com/image/up_img/detail/3/goods_31295/17819427920_Re.jpg"></a>
-            <a id="pf6" href="#lb6"><img src="https://artmugfile3.cafe24.com/image/up_img/detail/3/goods_31295/17819423870_Re.jpg"></a>
-            <a id="pf7" href="#lb7"><img src="https://artmugfile3.cafe24.com/image/up_img/detail/3/goods_31295/17818641250_Re.jpg"></a>
+        <div class="ove2-gallery" data-label="포트폴리오">
+            <img src="https://artmugfile3.cafe24.com/image/up_img/detail/3/goods_31295/17818640090_Re.jpg">
+            <img src="https://artmugfile3.cafe24.com/image/up_img/detail/3/goods_31295/17870382510_Re.jpg">
+            <img src="https://artmugfile3.cafe24.com/image/up_img/detail/3/goods_31295/17872137640_Re.jpg">
+            <img src="https://artmugfile3.cafe24.com/image/up_img/detail/3/goods_31295/17867237970_Re.jpg">
+            <img src="https://artmugfile3.cafe24.com/image/up_img/detail/3/goods_31295/17819427920_Re.jpg">
+            <img src="https://artmugfile3.cafe24.com/image/up_img/detail/3/goods_31295/17819423870_Re.jpg">
+            <img src="https://artmugfile3.cafe24.com/image/up_img/detail/3/goods_31295/17818641250_Re.jpg">
         </div>
-        <div class="ove2-gallery-preview" aria-label="포트폴리오 미리보기">
-            <button type="button" onclick="moveGallery(this,1,'pf')"><img src="https://artmugfile3.cafe24.com/image/up_img/detail/3/goods_31295/17818640090_Re.jpg" alt="포트폴리오 1 미리보기"></button>
-            <button type="button" onclick="moveGallery(this,2,'pf')"><img src="https://artmugfile3.cafe24.com/image/up_img/detail/3/goods_31295/17870382510_Re.jpg" alt="포트폴리오 2 미리보기"></button>
-            <button type="button" onclick="moveGallery(this,3,'pf')"><img src="https://artmugfile3.cafe24.com/image/up_img/detail/3/goods_31295/17872137640_Re.jpg" alt="포트폴리오 3 미리보기"></button>
-            <button type="button" onclick="moveGallery(this,4,'pf')"><img src="https://artmugfile3.cafe24.com/image/up_img/detail/3/goods_31295/17867237970_Re.jpg" alt="포트폴리오 4 미리보기"></button>
-            <button type="button" onclick="moveGallery(this,5,'pf')"><img src="https://artmugfile3.cafe24.com/image/up_img/detail/3/goods_31295/17819427920_Re.jpg" alt="포트폴리오 5 미리보기"></button>
-            <button type="button" onclick="moveGallery(this,6,'pf')"><img src="https://artmugfile3.cafe24.com/image/up_img/detail/3/goods_31295/17819423870_Re.jpg" alt="포트폴리오 6 미리보기"></button>
-            <button type="button" onclick="moveGallery(this,7,'pf')"><img src="https://artmugfile3.cafe24.com/image/up_img/detail/3/goods_31295/17818641250_Re.jpg" alt="포트폴리오 7 미리보기"></button>
-        </div>
+        <div class="ove2-gallery-preview" aria-label="포트폴리오 미리보기"></div>
     </div>
 
     <!-- ===== 디자인 샘플 ===== -->
-    <!-- 사진 추가 방법: ds1~ds4 번호가 같은 img 3곳(메인/썸네일/라이트박스) 모두 src만 새 사진 주소로 바꿔주세요. 슬라이드 칸을 늘리고 싶으면 아래 4곳(메인/썸네일/라이트박스/JS는 그대로) 블록을 복사해서 ds5, ds6... 로 번호만 바꿔 추가하면 됩니다 -->
+    <!-- 사진 추가/삭제/교체 방법은 포트폴리오와 동일합니다: 아래 .ove2-gallery 안의 <img src="..."> 줄만 편집하세요 -->
     <div id="design-sample"></div>
     <div class="ove2-card">
         <div class="ove2-title"><span class="ove2-star">★</span>디자인 샘플<span class="ove2-star">★</span></div>
-        <div class="ove2-gallery">
-            <a id="ds1" href="#lbds1"><img src="https://placehold.co/500x650/fdf6ec/c9a578?text=%EC%82%AC%EC%A7%84%EC%9D%84+%EB%84%A3%EC%96%B4%EC%A3%BC%EC%84%B8%EC%9A%94"></a>
-            <a id="ds2" href="#lbds2"><img src="https://placehold.co/500x650/fdf6ec/c9a578?text=%EC%82%AC%EC%A7%84%EC%9D%84+%EB%84%A3%EC%96%B4%EC%A3%BC%EC%84%B8%EC%9A%94"></a>
-            <a id="ds3" href="#lbds3"><img src="https://placehold.co/500x650/fdf6ec/c9a578?text=%EC%82%AC%EC%A7%84%EC%9D%84+%EB%84%A3%EC%96%B4%EC%A3%BC%EC%84%B8%EC%9A%94"></a>
-            <a id="ds4" href="#lbds4"><img src="https://placehold.co/500x650/fdf6ec/c9a578?text=%EC%82%AC%EC%A7%84%EC%9D%84+%EB%84%A3%EC%96%B4%EC%A3%BC%EC%84%B8%EC%9A%94"></a>
+        <div class="ove2-gallery" data-label="디자인 샘플">
+            <img src="data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20width%3D%27500%27%20height%3D%27650%27%20viewBox%3D%270%200%20500%20650%27%3E%0A%3Crect%20width%3D%27100%25%27%20height%3D%27100%25%27%20fill%3D%27%23fdf6ec%27/%3E%0A%3Crect%20x%3D%276%27%20y%3D%276%27%20width%3D%27488%27%20height%3D%27638%27%20fill%3D%27none%27%20stroke%3D%27%23ecc99a%27%20stroke-width%3D%273%27%20stroke-dasharray%3D%2710%208%27/%3E%0A%3Ctext%20x%3D%2750%25%27%20y%3D%2750%25%27%20font-family%3D%27sans-serif%27%20font-size%3D%2726%27%20font-weight%3D%27700%27%20fill%3D%27%23c9a578%27%20text-anchor%3D%27middle%27%20dominant-baseline%3D%27middle%27%3E%EC%B6%94%ED%9B%84%20%EC%B6%94%EA%B0%80%EB%90%A0%20%EC%98%88%EC%A0%95%EC%9E%85%EB%8B%88%EB%8B%A4%3C/text%3E%0A%3C/svg%3E">
+            <img src="data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20width%3D%27500%27%20height%3D%27650%27%20viewBox%3D%270%200%20500%20650%27%3E%0A%3Crect%20width%3D%27100%25%27%20height%3D%27100%25%27%20fill%3D%27%23fdf6ec%27/%3E%0A%3Crect%20x%3D%276%27%20y%3D%276%27%20width%3D%27488%27%20height%3D%27638%27%20fill%3D%27none%27%20stroke%3D%27%23ecc99a%27%20stroke-width%3D%273%27%20stroke-dasharray%3D%2710%208%27/%3E%0A%3Ctext%20x%3D%2750%25%27%20y%3D%2750%25%27%20font-family%3D%27sans-serif%27%20font-size%3D%2726%27%20font-weight%3D%27700%27%20fill%3D%27%23c9a578%27%20text-anchor%3D%27middle%27%20dominant-baseline%3D%27middle%27%3E%EC%B6%94%ED%9B%84%20%EC%B6%94%EA%B0%80%EB%90%A0%20%EC%98%88%EC%A0%95%EC%9E%85%EB%8B%88%EB%8B%A4%3C/text%3E%0A%3C/svg%3E">
+            <img src="data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20width%3D%27500%27%20height%3D%27650%27%20viewBox%3D%270%200%20500%20650%27%3E%0A%3Crect%20width%3D%27100%25%27%20height%3D%27100%25%27%20fill%3D%27%23fdf6ec%27/%3E%0A%3Crect%20x%3D%276%27%20y%3D%276%27%20width%3D%27488%27%20height%3D%27638%27%20fill%3D%27none%27%20stroke%3D%27%23ecc99a%27%20stroke-width%3D%273%27%20stroke-dasharray%3D%2710%208%27/%3E%0A%3Ctext%20x%3D%2750%25%27%20y%3D%2750%25%27%20font-family%3D%27sans-serif%27%20font-size%3D%2726%27%20font-weight%3D%27700%27%20fill%3D%27%23c9a578%27%20text-anchor%3D%27middle%27%20dominant-baseline%3D%27middle%27%3E%EC%B6%94%ED%9B%84%20%EC%B6%94%EA%B0%80%EB%90%A0%20%EC%98%88%EC%A0%95%EC%9E%85%EB%8B%88%EB%8B%A4%3C/text%3E%0A%3C/svg%3E">
+            <img src="data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20width%3D%27500%27%20height%3D%27650%27%20viewBox%3D%270%200%20500%20650%27%3E%0A%3Crect%20width%3D%27100%25%27%20height%3D%27100%25%27%20fill%3D%27%23fdf6ec%27/%3E%0A%3Crect%20x%3D%276%27%20y%3D%276%27%20width%3D%27488%27%20height%3D%27638%27%20fill%3D%27none%27%20stroke%3D%27%23ecc99a%27%20stroke-width%3D%273%27%20stroke-dasharray%3D%2710%208%27/%3E%0A%3Ctext%20x%3D%2750%25%27%20y%3D%2750%25%27%20font-family%3D%27sans-serif%27%20font-size%3D%2726%27%20font-weight%3D%27700%27%20fill%3D%27%23c9a578%27%20text-anchor%3D%27middle%27%20dominant-baseline%3D%27middle%27%3E%EC%B6%94%ED%9B%84%20%EC%B6%94%EA%B0%80%EB%90%A0%20%EC%98%88%EC%A0%95%EC%9E%85%EB%8B%88%EB%8B%A4%3C/text%3E%0A%3C/svg%3E">
         </div>
-        <div class="ove2-gallery-preview" aria-label="디자인 샘플 미리보기">
-            <button type="button" onclick="moveGallery(this,1,'ds')"><img src="https://placehold.co/160x160/fdf6ec/c9a578?text=1" alt="디자인 샘플 1 미리보기"></button>
-            <button type="button" onclick="moveGallery(this,2,'ds')"><img src="https://placehold.co/160x160/fdf6ec/c9a578?text=2" alt="디자인 샘플 2 미리보기"></button>
-            <button type="button" onclick="moveGallery(this,3,'ds')"><img src="https://placehold.co/160x160/fdf6ec/c9a578?text=3" alt="디자인 샘플 3 미리보기"></button>
-            <button type="button" onclick="moveGallery(this,4,'ds')"><img src="https://placehold.co/160x160/fdf6ec/c9a578?text=4" alt="디자인 샘플 4 미리보기"></button>
-        </div>
+        <div class="ove2-gallery-preview" aria-label="디자인 샘플 미리보기"></div>
     </div>
 
     <!-- ===== 표정 샘플 ===== -->
     <div id="expression-sample"></div>
     <div class="ove2-card">
         <div class="ove2-title"><span class="ove2-star">★</span>표정 샘플<span class="ove2-star">★</span></div>
-        <div class="ove2-gallery">
-            <a id="ex1" href="#lbex1"><img src="https://placehold.co/500x650/fdf6ec/c9a578?text=%EC%82%AC%EC%A7%84%EC%9D%84+%EB%84%A3%EC%96%B4%EC%A3%BC%EC%84%B8%EC%9A%94"></a>
-            <a id="ex2" href="#lbex2"><img src="https://placehold.co/500x650/fdf6ec/c9a578?text=%EC%82%AC%EC%A7%84%EC%9D%84+%EB%84%A3%EC%96%B4%EC%A3%BC%EC%84%B8%EC%9A%94"></a>
-            <a id="ex3" href="#lbex3"><img src="https://placehold.co/500x650/fdf6ec/c9a578?text=%EC%82%AC%EC%A7%84%EC%9D%84+%EB%84%A3%EC%96%B4%EC%A3%BC%EC%84%B8%EC%9A%94"></a>
-            <a id="ex4" href="#lbex4"><img src="https://placehold.co/500x650/fdf6ec/c9a578?text=%EC%82%AC%EC%A7%84%EC%9D%84+%EB%84%A3%EC%96%B4%EC%A3%BC%EC%84%B8%EC%9A%94"></a>
+        <div class="ove2-gallery" data-label="표정 샘플">
+            <img src="data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20width%3D%27500%27%20height%3D%27650%27%20viewBox%3D%270%200%20500%20650%27%3E%0A%3Crect%20width%3D%27100%25%27%20height%3D%27100%25%27%20fill%3D%27%23fdf6ec%27/%3E%0A%3Crect%20x%3D%276%27%20y%3D%276%27%20width%3D%27488%27%20height%3D%27638%27%20fill%3D%27none%27%20stroke%3D%27%23ecc99a%27%20stroke-width%3D%273%27%20stroke-dasharray%3D%2710%208%27/%3E%0A%3Ctext%20x%3D%2750%25%27%20y%3D%2750%25%27%20font-family%3D%27sans-serif%27%20font-size%3D%2726%27%20font-weight%3D%27700%27%20fill%3D%27%23c9a578%27%20text-anchor%3D%27middle%27%20dominant-baseline%3D%27middle%27%3E%EC%B6%94%ED%9B%84%20%EC%B6%94%EA%B0%80%EB%90%A0%20%EC%98%88%EC%A0%95%EC%9E%85%EB%8B%88%EB%8B%A4%3C/text%3E%0A%3C/svg%3E">
+            <img src="data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20width%3D%27500%27%20height%3D%27650%27%20viewBox%3D%270%200%20500%20650%27%3E%0A%3Crect%20width%3D%27100%25%27%20height%3D%27100%25%27%20fill%3D%27%23fdf6ec%27/%3E%0A%3Crect%20x%3D%276%27%20y%3D%276%27%20width%3D%27488%27%20height%3D%27638%27%20fill%3D%27none%27%20stroke%3D%27%23ecc99a%27%20stroke-width%3D%273%27%20stroke-dasharray%3D%2710%208%27/%3E%0A%3Ctext%20x%3D%2750%25%27%20y%3D%2750%25%27%20font-family%3D%27sans-serif%27%20font-size%3D%2726%27%20font-weight%3D%27700%27%20fill%3D%27%23c9a578%27%20text-anchor%3D%27middle%27%20dominant-baseline%3D%27middle%27%3E%EC%B6%94%ED%9B%84%20%EC%B6%94%EA%B0%80%EB%90%A0%20%EC%98%88%EC%A0%95%EC%9E%85%EB%8B%88%EB%8B%A4%3C/text%3E%0A%3C/svg%3E">
+            <img src="data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20width%3D%27500%27%20height%3D%27650%27%20viewBox%3D%270%200%20500%20650%27%3E%0A%3Crect%20width%3D%27100%25%27%20height%3D%27100%25%27%20fill%3D%27%23fdf6ec%27/%3E%0A%3Crect%20x%3D%276%27%20y%3D%276%27%20width%3D%27488%27%20height%3D%27638%27%20fill%3D%27none%27%20stroke%3D%27%23ecc99a%27%20stroke-width%3D%273%27%20stroke-dasharray%3D%2710%208%27/%3E%0A%3Ctext%20x%3D%2750%25%27%20y%3D%2750%25%27%20font-family%3D%27sans-serif%27%20font-size%3D%2726%27%20font-weight%3D%27700%27%20fill%3D%27%23c9a578%27%20text-anchor%3D%27middle%27%20dominant-baseline%3D%27middle%27%3E%EC%B6%94%ED%9B%84%20%EC%B6%94%EA%B0%80%EB%90%A0%20%EC%98%88%EC%A0%95%EC%9E%85%EB%8B%88%EB%8B%A4%3C/text%3E%0A%3C/svg%3E">
+            <img src="data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20width%3D%27500%27%20height%3D%27650%27%20viewBox%3D%270%200%20500%20650%27%3E%0A%3Crect%20width%3D%27100%25%27%20height%3D%27100%25%27%20fill%3D%27%23fdf6ec%27/%3E%0A%3Crect%20x%3D%276%27%20y%3D%276%27%20width%3D%27488%27%20height%3D%27638%27%20fill%3D%27none%27%20stroke%3D%27%23ecc99a%27%20stroke-width%3D%273%27%20stroke-dasharray%3D%2710%208%27/%3E%0A%3Ctext%20x%3D%2750%25%27%20y%3D%2750%25%27%20font-family%3D%27sans-serif%27%20font-size%3D%2726%27%20font-weight%3D%27700%27%20fill%3D%27%23c9a578%27%20text-anchor%3D%27middle%27%20dominant-baseline%3D%27middle%27%3E%EC%B6%94%ED%9B%84%20%EC%B6%94%EA%B0%80%EB%90%A0%20%EC%98%88%EC%A0%95%EC%9E%85%EB%8B%88%EB%8B%A4%3C/text%3E%0A%3C/svg%3E">
         </div>
-        <div class="ove2-gallery-preview" aria-label="표정 샘플 미리보기">
-            <button type="button" onclick="moveGallery(this,1,'ex')"><img src="https://placehold.co/160x160/fdf6ec/c9a578?text=1" alt="표정 샘플 1 미리보기"></button>
-            <button type="button" onclick="moveGallery(this,2,'ex')"><img src="https://placehold.co/160x160/fdf6ec/c9a578?text=2" alt="표정 샘플 2 미리보기"></button>
-            <button type="button" onclick="moveGallery(this,3,'ex')"><img src="https://placehold.co/160x160/fdf6ec/c9a578?text=3" alt="표정 샘플 3 미리보기"></button>
-            <button type="button" onclick="moveGallery(this,4,'ex')"><img src="https://placehold.co/160x160/fdf6ec/c9a578?text=4" alt="표정 샘플 4 미리보기"></button>
-        </div>
+        <div class="ove2-gallery-preview" aria-label="표정 샘플 미리보기"></div>
     </div>
 
     <div id="calc"></div>
@@ -552,39 +548,61 @@ html { scroll-behavior: smooth; }
 
 </div>
 
-<!-- 확대보기 창 (CSS만 사용) -->
-<div id="lb1" class="ove2-lb"><a href="#portfolio" class="ove2-lb-bg"></a><a href="#portfolio" class="ove2-lb-close">&times;</a><img src="https://artmugfile3.cafe24.com/image/up_img/detail/3/goods_31295/17818640090_Re.jpg"></div>
-<div id="lb2" class="ove2-lb"><a href="#portfolio" class="ove2-lb-bg"></a><a href="#portfolio" class="ove2-lb-close">&times;</a><img src="https://artmugfile3.cafe24.com/image/up_img/detail/3/goods_31295/17870382510_Re.jpg"></div>
-<div id="lb3" class="ove2-lb"><a href="#portfolio" class="ove2-lb-bg"></a><a href="#portfolio" class="ove2-lb-close">&times;</a><img src="https://artmugfile3.cafe24.com/image/up_img/detail/3/goods_31295/17872137640_Re.jpg"></div>
-<div id="lb4" class="ove2-lb"><a href="#portfolio" class="ove2-lb-bg"></a><a href="#portfolio" class="ove2-lb-close">&times;</a><img src="https://artmugfile3.cafe24.com/image/up_img/detail/3/goods_31295/17867237970_Re.jpg"></div>
-<div id="lb5" class="ove2-lb"><a href="#portfolio" class="ove2-lb-bg"></a><a href="#portfolio" class="ove2-lb-close">&times;</a><img src="https://artmugfile3.cafe24.com/image/up_img/detail/3/goods_31295/17819427920_Re.jpg"></div>
-<div id="lb6" class="ove2-lb"><a href="#portfolio" class="ove2-lb-bg"></a><a href="#portfolio" class="ove2-lb-close">&times;</a><img src="https://artmugfile3.cafe24.com/image/up_img/detail/3/goods_31295/178186423870_Re.jpg"></div>
-<div id="lb7" class="ove2-lb"><a href="#portfolio" class="ove2-lb-bg"></a><a href="#portfolio" class="ove2-lb-close">&times;</a><img src="https://artmugfile3.cafe24.com/image/up_img/detail/3/goods_31295/17818641250_Re.jpg"></div>
-
-<!-- 디자인 샘플 확대보기 -->
-<div id="lbds1" class="ove2-lb"><a href="#design-sample" class="ove2-lb-bg"></a><a href="#design-sample" class="ove2-lb-close">&times;</a><img src="https://placehold.co/500x650/fdf6ec/c9a578?text=%EC%82%AC%EC%A7%84%EC%9D%84+%EB%84%A3%EC%96%B4%EC%A3%BC%EC%84%B8%EC%9A%94"></div>
-<div id="lbds2" class="ove2-lb"><a href="#design-sample" class="ove2-lb-bg"></a><a href="#design-sample" class="ove2-lb-close">&times;</a><img src="https://placehold.co/500x650/fdf6ec/c9a578?text=%EC%82%AC%EC%A7%84%EC%9D%84+%EB%84%A3%EC%96%B4%EC%A3%BC%EC%84%B8%EC%9A%94"></div>
-<div id="lbds3" class="ove2-lb"><a href="#design-sample" class="ove2-lb-bg"></a><a href="#design-sample" class="ove2-lb-close">&times;</a><img src="https://placehold.co/500x650/fdf6ec/c9a578?text=%EC%82%AC%EC%A7%84%EC%9D%84+%EB%84%A3%EC%96%B4%EC%A3%BC%EC%84%B8%EC%9A%94"></div>
-<div id="lbds4" class="ove2-lb"><a href="#design-sample" class="ove2-lb-bg"></a><a href="#design-sample" class="ove2-lb-close">&times;</a><img src="https://placehold.co/500x650/fdf6ec/c9a578?text=%EC%82%AC%EC%A7%84%EC%9D%84+%EB%84%A3%EC%96%B4%EC%A3%BC%EC%84%B8%EC%9A%94"></div>
-
-<!-- 표정 샘플 확대보기 -->
-<div id="lbex1" class="ove2-lb"><a href="#expression-sample" class="ove2-lb-bg"></a><a href="#expression-sample" class="ove2-lb-close">&times;</a><img src="https://placehold.co/500x650/fdf6ec/c9a578?text=%EC%82%AC%EC%A7%84%EC%9D%84+%EB%84%A3%EC%96%B4%EC%A3%BC%EC%84%B8%EC%9A%94"></div>
-<div id="lbex2" class="ove2-lb"><a href="#expression-sample" class="ove2-lb-bg"></a><a href="#expression-sample" class="ove2-lb-close">&times;</a><img src="https://placehold.co/500x650/fdf6ec/c9a578?text=%EC%82%AC%EC%A7%84%EC%9D%84+%EB%84%A3%EC%96%B4%EC%A3%BC%EC%84%B8%EC%9A%94"></div>
-<div id="lbex3" class="ove2-lb"><a href="#expression-sample" class="ove2-lb-bg"></a><a href="#expression-sample" class="ove2-lb-close">&times;</a><img src="https://placehold.co/500x650/fdf6ec/c9a578?text=%EC%82%AC%EC%A7%84%EC%9D%84+%EB%84%A3%EC%96%B4%EC%A3%BC%EC%84%B8%EC%9A%94"></div>
-<div id="lbex4" class="ove2-lb"><a href="#expression-sample" class="ove2-lb-bg"></a><a href="#expression-sample" class="ove2-lb-close">&times;</a><img src="https://placehold.co/500x650/fdf6ec/c9a578?text=%EC%82%AC%EC%A7%84%EC%9D%84+%EB%84%A3%EC%96%B4%EC%A3%BC%EC%84%B8%EC%9A%94"></div>
-
+<!-- 사진 확대보기 창: 위 갤러리들이 공용으로 사용합니다. 여기는 수정하실 필요 없습니다 -->
+<div id="ove2-lightbox" class="ove2-lb-modal" onclick="closeOve2Lightbox()">
+    <span class="ove2-lb-modal-close" onclick="closeOve2Lightbox()">&times;</span>
+    <img id="ove2-lightbox-img" src="" alt="확대 이미지">
+</div>
 
 <script>
-function moveGallery(btn, n, prefix) {
-    var card = btn.closest('.ove2-card');
-    var gallery = card ? card.querySelector('.ove2-gallery') : null;
-    var target = document.getElementById(prefix + n);
-    if (!gallery || !target) return;
-    gallery.scrollTo({
-        left: target.offsetLeft - gallery.offsetLeft - 6,
-        behavior: 'smooth'
+/* 사진 갤러리(포트폴리오/디자인 샘플/표정 샘플) 자동 처리
+   - .ove2-gallery 안의 <img> 목록만 보고 하단 미리보기 썸네일을 자동 생성합니다.
+   - 메인 사진을 클릭하면 확대보기가 열립니다.
+   - 사진을 추가/삭제/교체하고 싶으면 .ove2-gallery 안의 <img src="..."> 줄만 수정하면 됩니다. */
+function initOve2Galleries() {
+    document.querySelectorAll('.ove2-gallery').forEach(function (gallery) {
+        var imgs = gallery.querySelectorAll('img');
+        var preview = gallery.nextElementSibling;
+        var label = gallery.getAttribute('data-label') || '이미지';
+
+        if (preview && preview.classList.contains('ove2-gallery-preview')) {
+            preview.innerHTML = '';
+            imgs.forEach(function (img, idx) {
+                var btn = document.createElement('button');
+                btn.type = 'button';
+                var thumb = document.createElement('img');
+                thumb.src = img.getAttribute('src');
+                thumb.alt = label + ' ' + (idx + 1) + ' 미리보기';
+                btn.appendChild(thumb);
+                btn.addEventListener('click', function () {
+                    gallery.scrollTo({
+                        left: img.offsetLeft - gallery.offsetLeft - 6,
+                        behavior: 'smooth'
+                    });
+                });
+                preview.appendChild(btn);
+            });
+        }
+
+        imgs.forEach(function (img) {
+            img.addEventListener('click', function () {
+                openOve2Lightbox(img.getAttribute('src'));
+            });
+        });
     });
 }
+
+function openOve2Lightbox(src) {
+    var modal = document.getElementById('ove2-lightbox');
+    var img = document.getElementById('ove2-lightbox-img');
+    img.src = src;
+    modal.classList.add('open');
+}
+function closeOve2Lightbox() {
+    document.getElementById('ove2-lightbox').classList.remove('open');
+}
+
+initOve2Galleries();
 </script>
 <script>
   /* 팁: 아래 'slotStatus'에서 각 달의 슬롯 동그라미 표기를 자유롭게 바꾸실 수 있습니다. 
@@ -593,6 +611,14 @@ function moveGallery(btn, n, prefix) {
     '●',  /* 이번 달 슬롯 */
     '○',  /* 다음 달 슬롯 */
     '○'   /* 다다음 달 슬롯 */
+  ];
+
+  /* 팁: 여기에 의뢰자님 닉네임을 넣어주시면 슬롯 밑에 자동으로 표시됩니다.
+     빈칸('')으로 두면 아무것도 표시되지 않아요. */
+  const slotNickname = [
+    '',  /* 이번 달 의뢰자 닉네임 */
+    '',  /* 다음 달 의뢰자 닉네임 */
+    ''   /* 다다음 달 의뢰자 닉네임 */
   ];
 
   function renderSlots() {
@@ -604,7 +630,9 @@ function moveGallery(btn, n, prefix) {
       const d = new Date(now.getFullYear(), now.getMonth() + i, 1);
       const mName = (d.getMonth() + 1) + '월';
       const status = slotStatus[i] || '○';
-      html += `<div class="m"><span class="cap">${mName}</span><span class="dotrow">${status}</span></div>`;
+      const nick = slotNickname[i] || '';
+      const nickHtml = nick ? `<span class="nick">${nick}</span>` : '';
+      html += `<div class="m"><span class="cap">${mName}</span><span class="dotrow">${status}</span>${nickHtml}</div>`;
     }
     container.innerHTML = html;
   }
