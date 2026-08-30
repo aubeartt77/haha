@@ -601,17 +601,49 @@ function closeOve2Lightbox() {
 }
 
 initOve2Galleries();
+</script>
 <script>
-function sendHeight() {
+  /* 팁: 아래 'slotStatus'에서 각 달의 슬롯 동그라미 표기를 자유롭게 바꾸실 수 있습니다. 
+     ● = 마감/작업중, ○ = 비었음, ◐ = 예약/대기중 */
+  const slotStatus = [
+    '●',  /* 이번 달 슬롯 */
+    '◐',  /* 다음 달 슬롯 */
+    '○'   /* 다다음 달 슬롯 */
+  ];
+
+  /* 팁: 여기에 의뢰자님 닉네임을 넣어주시면 슬롯 밑에 자동으로 표시됩니다.
+     빈칸('')으로 두면 아무것도 표시되지 않아요. */
+  const slotNickname = [
+    '*******5님',  /* 이번 달 의뢰자 닉네임 */
+    '**라님',  /* 다음 달 의뢰자 닉네임 */
+    ''   /* 다다음 달 의뢰자 닉네임 */
+  ];
+
+  function renderSlots() {
+    const container = document.getElementById('slotContainer');
+    if(!container) return;
+    const now = new Date();
+    let html = '';
+    for(let i = 0; i < 3; i++) {
+      const d = new Date(now.getFullYear(), now.getMonth() + i, 1);
+      const mName = (d.getMonth() + 1) + '월';
+      const status = slotStatus[i] || '○';
+      const nick = slotNickname[i] || '';
+      const nickHtml = nick ? `<span class="nick">${nick}</span>` : '';
+      html += `<div class="m"><span class="cap">${mName}</span><span class="dotrow">${status}</span>${nickHtml}</div>`;
+    }
+    container.innerHTML = html;
+  }
+  renderSlots();
+
+  function sendHeight() {
     window.parent.postMessage({ frameHeight: document.body.scrollHeight }, '*');
-}
-
-window.onload = function() {
+  }
+  window.onload = function() {
     sendHeight();
-    setTimeout(sendHeight, 500);
-};
-
-new ResizeObserver(sendHeight).observe(document.body);
+    setTimeout(sendHeight, 500); // 이미지 로딩 대비
+  };
+  new ResizeObserver(sendHeight).observe(document.body);
 </script>
 </body>
 </html>
