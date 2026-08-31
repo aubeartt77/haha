@@ -553,76 +553,54 @@ html { scroll-behavior: smooth; }
 </div>
 
 <script>
-/* 사진 갤러리(포트폴리오/디자인 샘플/표정 샘플) 자동 처리
-   - .ove2-gallery 안의 <img> 목록만 보고 하단 미리보기 썸네일을 자동 생성합니다.
-   - 메인 사진을 클릭하면 확대보기가 열립니다.
-   - 사진을 추가/삭제/교체하고 싶으면 .ove2-gallery 안의 <img src="..."> 줄만 수정하면 됩니다. */
-function initOve2Galleries() {
-    document.querySelectorAll('.ove2-gallery').forEach(function (gallery) {
-        var imgs = gallery.querySelectorAll('img');
-        var preview = gallery.nextElementSibling;
-        var label = gallery.getAttribute('data-label') || '이미지';
+  /* 슬롯 설정 */
+  const slotStatus = ['●', '◐', '○'];
+  const slotNickname = ['*******5님', '**라님', ''];
 
-        if (preview && preview.classList.contains('ove2-gallery-preview')) {
-            preview.innerHTML = '';
-            imgs.forEach(function (img, idx) {
-                var btn = document.createElement('button');
-                btn.type = 'button';
-                var thumb = document.createElement('img');
-                thumb.src = img.getAttribute('src');
-                thumb.alt = label + ' ' + (idx + 1) + ' 미리보기';
-                btn.appendChild(thumb);
-                btn.addEventListener('click', function () {
-                    gallery.scrollTo({
-                        left: img.offsetLeft - gallery.offsetLeft - 6,
-                        behavior: 'smooth'
-                    });
-                });
-                preview.appendChild(btn);
-            });
-        }
+  function renderSlots() {
+    const container = document.getElementById('slotContainer');
+    if(!container) return;
+    const now = new Date();
+    let html = '';
+    for(let i = 0; i < 3; i++) {
+      const d = new Date(now.getFullYear(), now.getMonth() + i, 1);
+      const mName = (d.getMonth() + 1) + '월';
+      const status = slotStatus[i] || '○';
+      const nick = slotNickname[i] || '';
+      const nickHtml = nick ? `<span class="nick">${nick}</span>` : '';
+      html += `<div class="m"><span class="cap">${mName}</span><span class="dotrow">${status}</span>${nickHtml}</div>`;
+    }
+    container.innerHTML = html;
+  }
+  renderSlots();
 
-        imgs.forEach(function (img) {
-            img.addEventListener('click', function () {
-                openOve2Lightbox(img.getAttribute('src'));
-            });
-        });
-    });
-}
+  /* 높이 전송 */
+  function sendHeight() {
+    const height = Math.max(document.body.scrollHeight, document.documentElement.scrollHeight);
+    window.parent.postMessage({ frameHeight: height }, '*');
+  }
 
-function openOve2Lightbox(src) {
-    var modal = document.getElementById('ove2-lightbox');
-    var img = document.getElementById('ove2-lightbox-img');
-    img.src = src;
-    modal.classList.add('open');
-}
-function closeOve2Lightbox() {
-    document.getElementById('ove2-lightbox').classList.remove('open');
-}
+  window.addEventListener('load', function() {
+    sendHeight();
+    setTimeout(sendHeight, 500);
+    setTimeout(sendHeight, 1500);
+  });
 
-initOve2Galleries();
-<script>
-  /* 기존 슬롯 및 높이 측정 코드는 그대로 두고, 아래 message 이벤트 부분만 교체/보강해 주세요 */
+  if (window.ResizeObserver) {
+    new ResizeObserver(sendHeight).observe(document.body);
+  }
 
+  /* 부모 창에서 이동 요청이 왔을 때 위치 측정 후 부모 창으로 위치 전송 */
   window.addEventListener('message', function(event) {
     const data = event.data;
     if (!data || data.type !== 'ove-scroll' || !data.target) return;
 
     const targetEl = document.getElementById(data.target);
     if (targetEl) {
-      // 해당 ID를 가진 요소의 절대 Y축 위치 계산 후 스크롤 이동
-      const targetPosition = targetEl.getBoundingClientRect().top + window.pageYOffset;
-      
-      window.scrollTo({
-        top: targetPosition,
-        behavior: 'smooth'
-      });
-
-      // 이동 완료 후 높이 재측정
-      setTimeout(sendHeight, 300);
-      setTimeout(sendHeight, 800);
-    } else {
-      console.warn('해당 ID를 가진 요소를 찾을 수 없습니다:', data.target);
+      // 해당 요소의 iframe 내부 Y 위치 측정
+      const targetTop = targetEl.getBoundingClientRect().top + window.pageYOffset;
+      // 부모 창으로 "이 위치로 스크롤해줘!" 메시지 보냄
+      window.parent.postMessage({ type: 'ove-do-scroll', top: targetTop }, '*');
     }
   });
 </script>
