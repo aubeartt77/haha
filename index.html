@@ -264,6 +264,118 @@ html { scroll-behavior: smooth; }
 .ove2-faq .a { font-size: 12.5px; color: var(--sub); line-height: 1.7; margin-top: 10px; padding-left: 2px; }
 </style>
 </head>
+    <!-- preview.html 내부 </body> 바로 위에 붙여넣기 -->
+<style>
+/* ================================
+   오브 커스텀 메뉴 (내부 삽입용)
+================================ */
+.ove-menu {
+    position: fixed;
+    right: 24px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 156px;
+    z-index: 99999;
+
+    padding: 14px 12px 12px;
+
+    background: rgba(255, 253, 249, 0.94);
+    border: 1px solid #efd5b7;
+    border-radius: 20px;
+
+    box-shadow:
+        0 8px 25px rgba(190, 130, 70, 0.13),
+        0 2px 8px rgba(190, 130, 70, 0.06);
+
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+
+    font-family: "Noto Sans KR", sans-serif;
+    text-align: center;
+}
+
+/* 상단 장식 */
+.ove-menu::before {
+    content: "★";
+    display: block;
+    margin-bottom: 8px;
+    color: #d98c3d;
+    font-size: 14px;
+    line-height: 1;
+}
+
+/* 메뉴 버튼 */
+.ove-menu a {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 35px;
+    margin-bottom: 6px;
+
+    background: rgba(255, 250, 243, 0.85);
+    border: 1px solid #f0dcc5;
+    border-radius: 10px;
+
+    color: #65584f;
+    text-decoration: none !important;
+
+    font-size: 11.5px;
+    font-weight: 600;
+
+    transition: all 0.2s ease;
+}
+
+.ove-menu a::before {
+    content: "★";
+    margin-right: 5px;
+    color: #d98c3d;
+    font-size: 8px;
+    transition: transform 0.2s ease;
+}
+
+.ove-menu a:hover {
+    background: linear-gradient(135deg, #fff7ed, #fff0df);
+    border-color: #dfa15f;
+    color: #b76f32;
+    transform: translateX(-3px);
+    box-shadow: 0 3px 10px rgba(190, 130, 70, 0.13);
+}
+
+.ove-menu a:hover::before {
+    transform: rotate(18deg) scale(1.15);
+}
+
+.ove-menu-decoration {
+    margin-top: 9px;
+    color: #d98c3d;
+    font-size: 9px;
+    letter-spacing: 4px;
+    opacity: 0.8;
+}
+
+@media (max-width: 1300px) {
+    .ove-menu { display: none; }
+}
+</style>
+
+<div class="ove-menu">
+    <a href="#work">작업 현황</a>
+    <a href="#notice">공지사항</a>
+    <a href="#order">작업 순서</a>
+    <a href="#collab">협업 할인</a>
+    <a href="#portfolio">포트폴리오</a>
+    <a href="#design-sample">디자인 샘플</a>
+    <a href="#expression-sample">표정 샘플</a>
+    <a href="#calc">실시간 견적</a>
+    <a href="#inquiry">문의 양식</a>
+    <a href="#faq">FAQ</a>
+
+    <div class="ove-menu-decoration">
+        ✦ ✦ ✦
+    </div>
+</div>
 <body>
 
 <div class="ove2">
