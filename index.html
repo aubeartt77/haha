@@ -636,6 +636,17 @@ initOve2Galleries();
   }
   renderSlots();
 
+  /* 아트머그 바깥 커스텀 메뉴에서 iframe 내부 섹션으로 이동 */
+  window.addEventListener('message', function(event) {
+    const data = event.data;
+    if (!data || data.type !== 'ove-scroll' || !data.target) return;
+
+    const target = document.getElementById(data.target);
+    if (target) {
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  });
+
   function sendHeight() {
     window.parent.postMessage({ frameHeight: document.body.scrollHeight }, '*');
   }
