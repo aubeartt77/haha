@@ -602,56 +602,27 @@ function closeOve2Lightbox() {
 
 initOve2Galleries();
 <script>
-  /* 슬롯 설정 */
-  const slotStatus = ['●', '◐', '○'];
-  const slotNickname = ['*******5님', '**라님', ''];
+  /* 기존 슬롯 및 높이 측정 코드는 그대로 두고, 아래 message 이벤트 부분만 교체/보강해 주세요 */
 
-  function renderSlots() {
-    const container = document.getElementById('slotContainer');
-    if(!container) return;
-    const now = new Date();
-    let html = '';
-    for(let i = 0; i < 3; i++) {
-      const d = new Date(now.getFullYear(), now.getMonth() + i, 1);
-      const mName = (d.getMonth() + 1) + '월';
-      const status = slotStatus[i] || '○';
-      const nick = slotNickname[i] || '';
-      const nickHtml = nick ? `<span class="nick">${nick}</span>` : '';
-      html += `<div class="m"><span class="cap">${mName}</span><span class="dotrow">${status}</span>${nickHtml}</div>`;
-    }
-    container.innerHTML = html;
-  }
-  renderSlots();
-
-  /* 높이 전송 함수 */
-  function sendHeight() {
-    const height = Math.max(document.body.scrollHeight, document.documentElement.scrollHeight);
-    window.parent.postMessage({ frameHeight: height }, '*');
-  }
-
-  window.addEventListener('load', function() {
-    sendHeight();
-    setTimeout(sendHeight, 500);
-    setTimeout(sendHeight, 1500);
-  });
-
-  if (window.ResizeObserver) {
-    new ResizeObserver(sendHeight).observe(document.body);
-  }
-
-  /* 커스텀 메뉴 클릭 이벤트 수신 */
   window.addEventListener('message', function(event) {
     const data = event.data;
     if (!data || data.type !== 'ove-scroll' || !data.target) return;
 
-    const target = document.getElementById(data.target);
-    if (target) {
-      // 해당 영역으로 스크롤 이동
-      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    const targetEl = document.getElementById(data.target);
+    if (targetEl) {
+      // 해당 ID를 가진 요소의 절대 Y축 위치 계산 후 스크롤 이동
+      const targetPosition = targetEl.getBoundingClientRect().top + window.pageYOffset;
       
-      // 이동 후 높이 재계산
+      window.scrollTo({
+        top: targetPosition,
+        behavior: 'smooth'
+      });
+
+      // 이동 완료 후 높이 재측정
       setTimeout(sendHeight, 300);
       setTimeout(sendHeight, 800);
+    } else {
+      console.warn('해당 ID를 가진 요소를 찾을 수 없습니다:', data.target);
     }
   });
 </script>
