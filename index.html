@@ -264,6 +264,20 @@ html { scroll-behavior: smooth; }
 .ove2-faq .a { font-size: 12.5px; color: var(--sub); line-height: 1.7; margin-top: 10px; padding-left: 2px; }
 </style>
 </head>
+    <script>
+window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'ove-scroll') {
+        var targetEl = document.getElementById(e.data.target);
+        if (targetEl) {
+            var targetTop = targetEl.getBoundingClientRect().top + (window.pageYOffset || document.documentElement.scrollTop);
+            window.parent.postMessage({
+                type: 'ove-do-scroll',
+                top: targetTop
+            }, '*');
+        }
+    }
+});
+</script>
 <body>
 
 <div class="ove2">
