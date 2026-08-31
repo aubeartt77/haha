@@ -264,24 +264,6 @@ html { scroll-behavior: smooth; }
 .ove2-faq .a { font-size: 12.5px; color: var(--sub); line-height: 1.7; margin-top: 10px; padding-left: 2px; }
 </style>
 </head>
-<script>
-window.addEventListener('message', function(e) {
-    try {
-        if (e.data && e.data.type === 'ove-scroll') {
-            var targetEl = document.getElementById(e.data.target);
-            if (targetEl) {
-                var targetTop = targetEl.getBoundingClientRect().top + (window.pageYOffset || document.documentElement.scrollTop);
-                window.parent.postMessage({
-                    type: 'ove-do-scroll',
-                    top: targetTop
-                }, '*');
-            }
-        }
-    } catch (err) {
-        console.warn('Target element search error handled');
-    }
-});
-</script>
 <body>
 
 <div class="ove2">
@@ -661,103 +643,18 @@ initOve2Galleries();
 
     const target = document.getElementById(data.target);
     if (target) {
-      const offset = 80;
-      const top = target.getBoundingClientRect().top + window.pageYOffset - offset;
-      window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
   });
 
-  let lastFrameHeight = 0;
-  let heightTimer = null;
-
-  function getFrameHeight() {
-    const body = document.body;
-    const html = document.documentElement;
-
-    return Math.max(
-      body ? body.scrollHeight : 0,
-      body ? body.offsetHeight : 0,
-      body ? body.getBoundingClientRect().height : 0,
-      html ? html.scrollHeight : 0,
-      html ? html.offsetHeight : 0,
-      html ? html.getBoundingClientRect().height : 0
-    );
+  function sendHeight() {
+    window.parent.postMessage({ frameHeight: document.body.scrollHeight }, '*');
   }
-
-  function sendHeight(force = false) {
-    const height = Math.ceil(getFrameHeight());
-
-    if (!force && height === lastFrameHeight) return;
-    lastFrameHeight = height;
-
-    window.parent.postMessage({
-      frameHeight: height,
-      type: 'ove-frame-height'
-    }, '*');
-  }
-
-  function scheduleHeightCheck(delay = 0) {
-    clearTimeout(heightTimer);
-    heightTimer = setTimeout(() => sendHeight(), delay);
-  }
-
-  function watchImages() {
-    document.querySelectorAll('img').forEach(function(img) {
-      if (img.complete) {
-        scheduleHeightCheck(0);
-      } else {
-        img.addEventListener('load', function() {
-          sendHeight(true);
-          scheduleHeightCheck(50);
-          scheduleHeightCheck(250);
-        });
-        img.addEventListener('error', function() {
-          scheduleHeightCheck(50);
-        });
-      }
-    });
-  }
-
-  window.addEventListener('load', function() {
-    sendHeight(true);
-    watchImages();
-
-    // 늦게 로딩되는 이미지/GIF/폰트까지 대비
-    [100, 300, 500, 1000, 1500, 2500, 4000, 6000].forEach(function(delay) {
-      setTimeout(function() {
-        sendHeight(true);
-        watchImages();
-      }, delay);
-    });
-  });
-
-  // 콘텐츠 자체의 크기 변화 감지
-  if (window.ResizeObserver) {
-    const resizeObserver = new ResizeObserver(function() {
-      scheduleHeightCheck(30);
-    });
-
-    resizeObserver.observe(document.documentElement);
-    if (document.body) resizeObserver.observe(document.body);
-  }
-
-  // JS로 이미지/콘텐츠가 추가되거나 변경되는 경우 감지
-  if (window.MutationObserver) {
-    const mutationObserver = new MutationObserver(function() {
-      watchImages();
-      scheduleHeightCheck(30);
-    });
-
-    mutationObserver.observe(document.documentElement, {
-      childList: true,
-      subtree: true,
-      attributes: true,
-      attributeFilter: ['style', 'class', 'src', 'width', 'height']
-    });
-  }
-
-  // 초기 실행
-  sendHeight(true);
+  window.onload = function() {
+    sendHeight();
+    setTimeout(sendHeight, 500); // 이미지 로딩 대비
+  };
+  new ResizeObserver(sendHeight).observe(document.body);
 </script>
 </body>
 </html>
