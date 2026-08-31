@@ -601,23 +601,11 @@ function closeOve2Lightbox() {
 }
 
 initOve2Galleries();
-</script>
 <script>
   /* 팁: 아래 'slotStatus'에서 각 달의 슬롯 동그라미 표기를 자유롭게 바꾸실 수 있습니다. 
      ● = 마감/작업중, ○ = 비었음, ◐ = 예약/대기중 */
-  const slotStatus = [
-    '●',  /* 이번 달 슬롯 */
-    '◐',  /* 다음 달 슬롯 */
-    '○'   /* 다다음 달 슬롯 */
-  ];
-
-  /* 팁: 여기에 의뢰자님 닉네임을 넣어주시면 슬롯 밑에 자동으로 표시됩니다.
-     빈칸('')으로 두면 아무것도 표시되지 않아요. */
-  const slotNickname = [
-    '*******5님',  /* 이번 달 의뢰자 닉네임 */
-    '**라님',  /* 다음 달 의뢰자 닉네임 */
-    ''   /* 다다음 달 의뢰자 닉네임 */
-  ];
+  const slotStatus = ['●', '◐', '○'];
+  const slotNickname = ['*******5님', '**라님', ''];
 
   function renderSlots() {
     const container = document.getElementById('slotContainer');
@@ -636,110 +624,39 @@ initOve2Galleries();
   }
   renderSlots();
 
-  /* 아트머그 바깥 커스텀 메뉴에서 iframe 내부 섹션으로 이동 */
+  /* ===== 높이 실시간 및 지연 갱신 (핵심 보강) ===== */
+  function sendHeight() {
+    // document.documentElement.scrollHeight를 함께 측정해 오차를 방지합니다.
+    const height = Math.max(document.body.scrollHeight, document.documentElement.scrollHeight);
+    window.parent.postMessage({ frameHeight: height }, '*');
+  }
+
+  // 1. 초기 로드 및 이미지 로딩 완료 시점에 전송
+  window.addEventListener('load', function() {
+    sendHeight();
+    setTimeout(sendHeight, 500);
+    setTimeout(sendHeight, 1500); // 늦게 로딩되는 GIF 대비
+    setTimeout(sendHeight, 3000);
+  });
+
+  // 2. DOM 리사이즈 감지
+  if (window.ResizeObserver) {
+    new ResizeObserver(sendHeight).observe(document.body);
+  }
+
+  /* ===== 부모 메뉴 클릭 시 스크롤 이동 ===== */
   window.addEventListener('message', function(event) {
     const data = event.data;
     if (!data || data.type !== 'ove-scroll' || !data.target) return;
 
     const target = document.getElementById(data.target);
     if (target) {
-      const offset = 80;
-      const top = target.getBoundingClientRect().top + window.pageYOffset - offset;
-      window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      // 스크롤 이동 후에도 짤림 방지를 위해 높이를 재전송합니다.
+      setTimeout(sendHeight, 300);
+      setTimeout(sendHeight, 800);
     }
   });
-
-  let lastFrameHeight = 0;
-  let heightTimer = null;
-
-  function getFrameHeight() {
-    const body = document.body;
-    const html = document.documentElement;
-
-    return Math.max(
-      body ? body.scrollHeight : 0,
-      body ? body.offsetHeight : 0,
-      body ? body.getBoundingClientRect().height : 0,
-      html ? html.scrollHeight : 0,
-      html ? html.offsetHeight : 0,
-      html ? html.getBoundingClientRect().height : 0
-    );
-  }
-
-  function sendHeight(force = false) {
-    const height = Math.ceil(getFrameHeight());
-
-    if (!force && height === lastFrameHeight) return;
-    lastFrameHeight = height;
-
-    window.parent.postMessage({
-      frameHeight: height,
-      type: 'ove-frame-height'
-    }, '*');
-  }
-
-  function scheduleHeightCheck(delay = 0) {
-    clearTimeout(heightTimer);
-    heightTimer = setTimeout(() => sendHeight(), delay);
-  }
-
-  function watchImages() {
-    document.querySelectorAll('img').forEach(function(img) {
-      if (img.complete) {
-        scheduleHeightCheck(0);
-      } else {
-        img.addEventListener('load', function() {
-          sendHeight(true);
-          scheduleHeightCheck(50);
-          scheduleHeightCheck(250);
-        });
-        img.addEventListener('error', function() {
-          scheduleHeightCheck(50);
-        });
-      }
-    });
-  }
-
-  window.addEventListener('load', function() {
-    sendHeight(true);
-    watchImages();
-
-    // 늦게 로딩되는 이미지/GIF/폰트까지 대비
-    [100, 300, 500, 1000, 1500, 2500, 4000, 6000].forEach(function(delay) {
-      setTimeout(function() {
-        sendHeight(true);
-        watchImages();
-      }, delay);
-    });
-  });
-
-  // 콘텐츠 자체의 크기 변화 감지
-  if (window.ResizeObserver) {
-    const resizeObserver = new ResizeObserver(function() {
-      scheduleHeightCheck(30);
-    });
-
-    resizeObserver.observe(document.documentElement);
-    if (document.body) resizeObserver.observe(document.body);
-  }
-
-  // JS로 이미지/콘텐츠가 추가되거나 변경되는 경우 감지
-  if (window.MutationObserver) {
-    const mutationObserver = new MutationObserver(function() {
-      watchImages();
-      scheduleHeightCheck(30);
-    });
-
-    mutationObserver.observe(document.documentElement, {
-      childList: true,
-      subtree: true,
-      attributes: true,
-      attributeFilter: ['style', 'class', 'src', 'width', 'height']
-    });
-  }
-
-  // 초기 실행
-  sendHeight(true);
 </script>
 </body>
 </html>
