@@ -602,8 +602,7 @@ function closeOve2Lightbox() {
 
 initOve2Galleries();
 <script>
-  /* 팁: 아래 'slotStatus'에서 각 달의 슬롯 동그라미 표기를 자유롭게 바꾸실 수 있습니다. 
-     ● = 마감/작업중, ○ = 비었음, ◐ = 예약/대기중 */
+  /* 슬롯 설정 */
   const slotStatus = ['●', '◐', '○'];
   const slotNickname = ['*******5님', '**라님', ''];
 
@@ -624,35 +623,33 @@ initOve2Galleries();
   }
   renderSlots();
 
-  /* ===== 높이 실시간 및 지연 갱신 (핵심 보강) ===== */
+  /* 높이 전송 함수 */
   function sendHeight() {
-    // document.documentElement.scrollHeight를 함께 측정해 오차를 방지합니다.
     const height = Math.max(document.body.scrollHeight, document.documentElement.scrollHeight);
     window.parent.postMessage({ frameHeight: height }, '*');
   }
 
-  // 1. 초기 로드 및 이미지 로딩 완료 시점에 전송
   window.addEventListener('load', function() {
     sendHeight();
     setTimeout(sendHeight, 500);
-    setTimeout(sendHeight, 1500); // 늦게 로딩되는 GIF 대비
-    setTimeout(sendHeight, 3000);
+    setTimeout(sendHeight, 1500);
   });
 
-  // 2. DOM 리사이즈 감지
   if (window.ResizeObserver) {
     new ResizeObserver(sendHeight).observe(document.body);
   }
 
-  /* ===== 부모 메뉴 클릭 시 스크롤 이동 ===== */
+  /* 커스텀 메뉴 클릭 이벤트 수신 */
   window.addEventListener('message', function(event) {
     const data = event.data;
     if (!data || data.type !== 'ove-scroll' || !data.target) return;
 
     const target = document.getElementById(data.target);
     if (target) {
+      // 해당 영역으로 스크롤 이동
       target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      // 스크롤 이동 후에도 짤림 방지를 위해 높이를 재전송합니다.
+      
+      // 이동 후 높이 재계산
       setTimeout(sendHeight, 300);
       setTimeout(sendHeight, 800);
     }
