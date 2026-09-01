@@ -369,11 +369,6 @@ html { scroll-behavior: smooth; }
     </div>
 
     <!-- ===== 포트폴리오 ===== -->
-    <!-- 사진 추가/삭제/교체 방법: 아래 .ove2-gallery 안에 <img src="사진주소"> 한 줄씩만 있으면 됩니다.
-         - 교체: src="..." 안의 주소만 새 사진 주소로 바꾸기
-         - 추가: <img src="사진주소"> 한 줄을 원하는 위치에 복사해서 붙여넣기
-         - 삭제: 지우고 싶은 <img src="..."> 한 줄 통째로 삭제
-         미리보기 썸네일과 확대보기는 자동으로 만들어지므로 여기만 수정하면 됩니다! -->
     <div id="portfolio"></div>
     <div class="ove2-card">
         <div class="ove2-title"><span class="ove2-star">★</span>포트폴리오<span class="ove2-star">★</span></div>
@@ -385,13 +380,11 @@ html { scroll-behavior: smooth; }
             <img src="https://artmugfile3.cafe24.com/image/up_img/detail/3/goods_31295/16901295120_Re.jpg">
             <img src="https://artmugfile3.cafe24.com/image/up_img/detail/3/goods_31295/16880274810_Re.jpg">
             <img src="https://artmugfile3.cafe24.com/image/up_img/detail/3/goods_31295/16846896093_Re.jpg">
-            
         </div>
         <div class="ove2-gallery-preview" aria-label="포트폴리오 미리보기"></div>
     </div>
 
     <!-- ===== 디자인 샘플 ===== -->
-    <!-- 사진 추가/삭제/교체 방법은 포트폴리오와 동일합니다: 아래 .ove2-gallery 안의 <img src="..."> 줄만 편집하세요 -->
     <div id="design-sample"></div>
     <div class="ove2-card">
         <div class="ove2-title"><span class="ove2-star">★</span>디자인 샘플<span class="ove2-star">★</span></div>
@@ -457,8 +450,7 @@ html { scroll-behavior: smooth; }
         <div class="ove2-calc-opt"><label><input type="radio" name="ovPriv" value="none" data-price="0" checked oninput="(function(c){var t=0;var b=c.querySelector('input[name=ovBase]:checked');if(b)t+=Number(b.getAttribute('data-price'));var bx=c.querySelectorAll('.ove2-calc-opt input[type=checkbox][data-price]');for(var i=0;i<bx.length;i++){if(bx[i].checked)t+=Number(bx[i].getAttribute('data-price'));}var eq=c.querySelector('#ovExprQty');if(eq)t+=Number(eq.value||0)*15000;var pv=c.querySelector('input[name=ovPriv]:checked');if(pv&&pv.value!='none'){var pp=Number(pv.getAttribute('data-price')||0);if(pv.value=='month'){var mq=c.querySelector('#ovMonthQty');pp=pp*Number((mq&&mq.value)||1);}t+=pp;}c.querySelector('.ove2-calc-total .sum').textContent=t.toLocaleString()+'원';})(this.closest('.ove2-card'))"> 공개 (기본)</label><span class="price">0원</span></div>
         <div class="ove2-calc-opt"><label><input type="radio" name="ovPriv" value="forever" data-price="400000" oninput="(function(c){var t=0;var b=c.querySelector('input[name=ovBase]:checked');if(b)t+=Number(b.getAttribute('data-price'));var bx=c.querySelectorAll('.ove2-calc-opt input[type=checkbox][data-price]');for(var i=0;i<bx.length;i++){if(bx[i].checked)t+=Number(bx[i].getAttribute('data-price'));}var eq=c.querySelector('#ovExprQty');if(eq)t+=Number(eq.value||0)*15000;var pv=c.querySelector('input[name=ovPriv]:checked');if(pv&&pv.value!='none'){var pp=Number(pv.getAttribute('data-price')||0);if(pv.value=='month'){var mq=c.querySelector('#ovMonthQty');pp=pp*Number((mq&&mq.value)||1);}t+=pp;}c.querySelector('.ove2-calc-total .sum').textContent=t.toLocaleString()+'원';})(this.closest('.ove2-card'))"> 영구 비공개</label><span class="price">400,000원</span></div>
         <div class="ove2-calc-opt">
-            <label><input type="radio" name="ovPriv" value="month" data-price="70000" oninput="(function(c){var t=0;var b=c.querySelector('input[name=ovBase]:checked');if(b)t+=Number(b.getAttribute('data-price'));var bx=c.querySelectorAll('.ove2-calc-opt input[type=checkbox][data-price]');for(var i=0;i<bx.length;i++){if(bx[i].checked)t+=Number(bx[i].getAttribute('data-price'));}var eq=c.querySelector('#ovExprQty');if(eq)t+=Number(eq.value||0)*15000;var pv=c.querySelector('input[name=ovPriv]:checked');if(pv&&pv.value!='none'){var pp=Number(pv.getAttribute('data-price')||0);if(pv.value=='month'){var mq=c.querySelector('#ovMonthQty');pp=pp*Number((mq&&mq.value)||1);}t+=pp;}c.querySelector('.ove2-calc-total .sum').textContent=t.toLocaleString()+'원';})(this.closest('.ove2-card'))"> 한달 비공개 (단위 추가 가능)</label>
-            <span class="stepper"><input type="number" id="ovMonthQty" min="1" value="1" oninput="(function(c){var t=0;var b=c.querySelector('input[name=ovBase]:checked');if(b)t+=Number(b.getAttribute('data-price'));var bx=c.querySelectorAll('.ove2-calc-opt input[type=checkbox][data-price]');for(var i=0;i<bx.length;i++){if(bx[i].checked)t+=Number(bx[i].getAttribute('data-price'));}var eq=c.querySelector('#ovExprQty');if(eq)t+=Number(eq.value||0)*15000;var pv=c.querySelector('input[name=ovPriv]:checked');if(pv&&pv.value!='none'){var pp=Number(pv.getAttribute('data-price')||0);if(pv.value=='month'){var mq=c.querySelector('#ovMonthQty');pp=pp*Number((mq&&mq.value)||1);}t+=pp;}c.querySelector('.ove2-calc-total .sum').textContent=t.toLocaleString()+'원';})(this.closest('.ove2-card'))"> 개월 × 70,000원</span></div>
+            <label><input type="radio" name="ovPriv" value="month" data-price="70000" oninput="(function(c){var t=0;var b=c.querySelector('input[name=ovBase]:checked');if(b)t+=Number(b.getAttribute('data-price'));var bx=c.querySelectorAll('.ove2-calc-opt input[type=checkbox][data-price]');for(var i=0;i<bx.length;i++){if(bx[i].checked)t+=Number(bx[i].getAttribute('data-price'));}var eq=c.querySelector('#ovExprQty');if(eq)t+=Number(eq.value||0)*15000;var pv=c.querySelector('input[name=ovPriv]:checked');if(pv&&pv.value!='none'){var pp=Number(pv.getAttribute('data-price')||0);if(pv.value=='month'){var mq=c.querySelector('#ovMonthQty');pp=pp*Number((mq&&mq.value)||1);}t+=pp;}c.querySelector('.ove2-calc-total .sum').textContent=t.toLocaleString()+'원';})(this.closest('.ove2-card'))"> 개월 × 70,000원</span></div>
 
         <div class="ove2-calc-total"><span>예상 견적</span><span class="sum">450,000원</span></div>
         <div class="ove2-calc-caveat">
@@ -553,10 +545,7 @@ html { scroll-behavior: smooth; }
 </div>
 
 <script>
-/* 사진 갤러리(포트폴리오/디자인 샘플/표정 샘플) 자동 처리
-   - .ove2-gallery 안의 <img> 목록만 보고 하단 미리보기 썸네일을 자동 생성합니다.
-   - 메인 사진을 클릭하면 확대보기가 열립니다.
-   - 사진을 추가/삭제/교체하고 싶으면 .ove2-gallery 안의 <img src="..."> 줄만 수정하면 됩니다. */
+/* 사진 갤러리(포트폴리오/디자인 샘플/표정 샘플) 자동 처리 */
 function initOve2Galleries() {
     document.querySelectorAll('.ove2-gallery').forEach(function (gallery) {
         var imgs = gallery.querySelectorAll('img');
@@ -603,20 +592,16 @@ function closeOve2Lightbox() {
 initOve2Galleries();
 </script>
 <script>
-  /* 팁: 아래 'slotStatus'에서 각 달의 슬롯 동그라미 표기를 자유롭게 바꾸실 수 있습니다. 
-     ● = 마감/작업중, ○ = 비었음, ◐ = 예약/대기중 */
   const slotStatus = [
     '●',  /* 이번 달 슬롯 */
     '◐',  /* 다음 달 슬롯 */
     '○'   /* 다다음 달 슬롯 */
   ];
 
-  /* 팁: 여기에 의뢰자님 닉네임을 넣어주시면 슬롯 밑에 자동으로 표시됩니다.
-     빈칸('')으로 두면 아무것도 표시되지 않아요. */
   const slotNickname = [
-    '*******5님',  /* 이번 달 의뢰자 닉네임 */
-    '**라님',  /* 다음 달 의뢰자 닉네임 */
-    ''   /* 다다음 달 의뢰자 닉네임 */
+    '*******5님',
+    '**라님',
+    ''
   ];
 
   function renderSlots() {
@@ -636,15 +621,25 @@ initOve2Galleries();
   }
   renderSlots();
 
-  /* 아트머그 바깥 커스텀 메뉴에서 iframe 내부 섹션으로 이동 */
-  window.addEventListener('message', function(event) {
+  /* [수정됨] iframe 안에서 직접 scrollIntoView 하지 않습니다.
+     iframe은 콘텐츠 높이만큼 딱 맞게 늘어나 있어서 내부에 스크롤할 공간 자체가 없고,
+     여기서 내부 스크롤을 시도하면 scrolling="no" 때문에 다시 위로 못 올라오는
+     "내용이 잘려서 사라지는" 현상이 생깁니다.
+     대신 타겟의 위치(px)만 계산해서 부모 페이지에 알려주고,
+     실제 스크롤은 부모(아트머그 바깥 페이지)가 하게 합니다. */
+  window.addEventListener('message', function (event) {
     const data = event.data;
     if (!data || data.type !== 'ove-scroll' || !data.target) return;
 
     const target = document.getElementById(data.target);
-    if (target) {
-      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
+    if (!target) return;
+
+    const offsetInFrame = target.getBoundingClientRect().top + window.scrollY;
+
+    window.parent.postMessage({
+      type: 'ove-scroll-parent',
+      top: offsetInFrame
+    }, '*');
   });
 
   function sendHeight() {
@@ -652,7 +647,7 @@ initOve2Galleries();
   }
   window.onload = function() {
     sendHeight();
-    setTimeout(sendHeight, 500); // 이미지 로딩 대비
+    setTimeout(sendHeight, 500);
   };
   new ResizeObserver(sendHeight).observe(document.body);
 </script>
