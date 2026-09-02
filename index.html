@@ -628,13 +628,21 @@ initOve2Galleries();
      대신 타겟의 위치(px)만 계산해서 부모 페이지에 알려주고,
      실제 스크롤은 부모(아트머그 바깥 페이지)가 하게 합니다. */
   window.addEventListener('message', function (event) {
+    console.log('[netlify] 메시지 받음:', event.data);
     const data = event.data;
-    if (!data || data.type !== 'ove-scroll' || !data.target) return;
+    if (!data || data.type !== 'ove-scroll' || !data.target) {
+      console.log('[netlify] ove-scroll 타입 아님, 무시함');
+      return;
+    }
 
     const target = document.getElementById(data.target);
-    if (!target) return;
+    if (!target) {
+      console.log('[netlify] 타겟 id를 문서에서 못 찾음:', data.target);
+      return;
+    }
 
     const offsetInFrame = target.getBoundingClientRect().top + window.scrollY;
+    console.log('[netlify] 계산된 위치:', offsetInFrame, '-> 부모에게 전송');
 
     window.parent.postMessage({
       type: 'ove-scroll-parent',
@@ -643,7 +651,7 @@ initOve2Galleries();
   });
 
   function sendHeight() {
-    window.parent.postMessage({ frameHeight: document.body.scrollHeight }, '*');
+    window.parent.postMessage({ type: 'ove2-height', height: document.body.scrollHeight }, '*');
   }
   window.onload = function() {
     sendHeight();
